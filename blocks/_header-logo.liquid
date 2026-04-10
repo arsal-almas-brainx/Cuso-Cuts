@@ -1,7 +1,7 @@
 {% liquid
   assign block_settings = block.settings
   assign logo_image = block_settings.image | default: settings.logo
-  
+
   assign alt_text_fallback = 'accessibility.home_logo_alt' | t: store_name: shop.name
   assign logo_alt = logo_image.alt | default: alt_text_fallback
 %}
@@ -12,17 +12,20 @@
   style="
     --logo-height: {{ block_settings.logo_height }}px;
     --logo-width: {{ block_settings.logo_width }}px;
+    --logo-height-mobile: {{ block_settings.logo_height_mobile }}px;
+    --logo-width-mobile: {{ block_settings.logo_width_mobile }}px;
     --logo-margin-top: {{ block_settings.margin_top }}%;
     --logo-margin-left: {{ block_settings.margin_left }}%;
+    --logo-margin-left-mobile: {{ block_settings.margin_left_mobile }}%;
   "
   {{ block.shopify_attributes }}
 >
   {% if logo_image != blank %}
     <div class="header-logo__image-container">
-      {{ logo_image | image_url: width: 1000 | image_tag:
-        class: 'header-logo__custom-img',
-        widths: '200, 400, 600, 800, 1000',
-        alt: logo_alt
+      {{
+        logo_image
+        | image_url: width: 1000
+        | image_tag: class: 'header-logo__custom-img', widths: '200, 400, 600, 800, 1000', alt: logo_alt
       }}
     </div>
   {% else %}
@@ -45,17 +48,19 @@
     height: var(--logo-height);
     width: var(--logo-width);
     object-fit: contain;
-    max-width: 100vw; 
+    max-width: 100vw;
   }
 
   @media screen and (max-width: 749px) {
     .header-logo__custom-img {
-      max-height: 50px;
-      width: auto;
+      height: var(--logo-height-mobile);
+      width: var(--logo-width-mobile);
+      max-height: none; 
     }
     .custom-logo-wrapper {
-        margin-left: 0; 
-        margin-top: 0;
+      margin-top: 0;
+      /* Apply the new mobile margin setting here */
+      margin-left: var(--logo-margin-left-mobile);
     }
   }
 {% endstylesheet %}
@@ -68,8 +73,7 @@
     {
       "type": "image_picker",
       "id": "image",
-      "label": "Logo Image",
-      "info": "If left blank, the default logo from Theme Settings will be used."
+      "label": "Logo Image"
     },
     {
       "type": "url",
@@ -79,7 +83,7 @@
     },
     {
       "type": "header",
-      "content": "Sizing"
+      "content": "Desktop Sizing"
     },
     {
       "type": "range",
@@ -94,7 +98,7 @@
     {
       "type": "range",
       "id": "logo_width",
-      "label": "Logo Width (Manual)",
+      "label": "Logo Width",
       "min": 50,
       "max": 1000,
       "step": 10,
@@ -103,7 +107,41 @@
     },
     {
       "type": "header",
-      "content": "Positioning (%)"
+      "content": "Mobile Sizing & Position"
+    },
+    {
+      "type": "range",
+      "id": "logo_height_mobile",
+      "label": "Mobile Logo Height",
+      "min": 10,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "label": "Mobile Logo Width",
+      "min": 50,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "margin_left_mobile",
+      "label": "Mobile Margin Left",
+      "min": -50,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Desktop Positioning (%)"
     },
     {
       "type": "range",

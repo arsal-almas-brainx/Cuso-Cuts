@@ -188,10 +188,11 @@
   endif
 %}
 <style>
+  /* --- YOUR EXISTING STYLE (DO NOT DISTURB) --- */
   #header-component {
     --full-open-header-height: var(--header-height) !important;
     overflow: visible !important;
-    min-height: 0 !important; 
+    min-height: 0 !important;
   }
 
   .header__underlay-open {
@@ -203,6 +204,7 @@
     height: var(--header-height) !important;
     overflow: visible !important;
   }
+  
   @media screen and (max-width: 749px) {
     .header, .header__row, .header-section {
       height: var(--header-height) !important;
@@ -211,11 +213,12 @@
     .header__columns {
       padding-top: 0 !important;
       padding-bottom: 0 !important;
-      display: flex !important; 
+      display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
     }
   }
+
   header-actions {
     display: flex !important;
     align-items: center !important;
@@ -236,6 +239,7 @@
   header-actions > *:first-child {
     margin-left: 0 !important;
   }
+
   {% if section.settings.enable_custom_icon_size %}
     .header-actions__action svg,
     .header-actions__action .svg-wrapper,
@@ -258,6 +262,7 @@
       left: auto !important;
     }
   {% endif %}
+
   .header[transparent]:not([data-sticky-state='active']) .header__underlay-closed {
     background-color: rgba(0, 0, 0, {{ section.settings.transparent_header_darkness | divided_by: 100.0 }}) !important;
     background-image: none !important;
@@ -268,6 +273,47 @@
 
   .header[transparent] .header__row {
     z-index: 2 !important;
+  }
+
+  @media screen and (max-width: 1024px) {
+    
+    .header__columns {
+      display: flex !important;
+      column-gap: 0 !important;
+    }
+    .header__drawer{
+      order: 4;
+    }
+    .header__column--right header-actions{
+      order: 2;
+    }
+    .header-logo {
+      grid-area: logo !important;
+      justify-content: flex-start !important;
+      display: flex !important;
+    }
+    header-actions {
+      grid-area: actions !important;
+      justify-content: flex-end !important;
+      margin-right: {{ section.settings.actions_margin_right_mobile }}% !important;
+    }
+    header-actions .header-actions__action,
+    header-actions shopify-account,
+    header-actions cart-icon,
+    .header__icon--menu {
+      margin-left: {{ section.settings.icon_spacing_mobile }}px !important;
+    }
+    .search-action { order: 1 !important; }
+    cart-icon { order: 2 !important; }
+    .header__icon--menu { 
+      order: 3 !important; 
+      display: flex !important;
+      margin-left: {{ section.settings.icon_spacing_mobile }}px !important;
+    }
+    .header__icon--menu svg {
+      width: 24px;
+      height: auto;
+    }
   }
 </style>
 
@@ -793,6 +839,7 @@
 
       &:not(:has(shopify-account)) .search-action {
         grid-area: rightA;
+        margin-right: -52%;
       }
 
       .search-action {
@@ -801,6 +848,7 @@
 
       header-actions {
         grid-area: rightB;
+        margin-right: -52% !important;
       }
     }
   }
@@ -1358,6 +1406,30 @@
       "label": "Space between icons",
       "min": -50,
       "max": 50,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Mobile Appearance"
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing_mobile",
+      "label": "Mobile Icon Spacing",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "actions_margin_right_mobile",
+      "label": "Mobile Group Margin Right",
+      "min": 0,
+      "max": 100,
       "step": 1,
       "unit": "%",
       "default": 0
