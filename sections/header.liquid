@@ -1,5 +1,3 @@
-
-
 {% liquid
   assign order = 'logo,menu,localization,search,drawer_search,actions'
 
@@ -189,6 +187,23 @@
     assign transparent_color_scheme_value = 'bottom'
   endif
 %}
+<style>
+  header-actions {
+    display: flex !important;
+    align-items: center !important;
+    margin-right: {{ section.settings.actions_margin_right }}% !important;
+    column-gap: {{ section.settings.icon_spacing }}px !important; 
+  }
+  header-actions .header-actions__action,
+  header-actions shopify-account,
+  header-actions cart-icon {
+    margin: 0 !important;
+    margin-left: {{ section.settings.icon_spacing }}px !important;
+  }
+  header-actions > *:first-child {
+    margin-left: 0 !important;
+  }
+</style>
 
 {% capture localization_markup %}
   {% liquid
@@ -411,11 +426,10 @@
   body {
     --header-height: 60px;
     --header-group-height: var(--header-height);
-    --transparent-header-offset-boolean: 0; /* stylelint-disable-line declaration-property-value-disallowed-list */
+    --transparent-header-offset-boolean: 0;
   }
 
   .header {
-    /* Set header paddings based on height setting */
     --header-padding: var(--padding-sm);
     --font-paragraph--line-height: 1;
     --header-content-transition-timing: 0s;
@@ -428,7 +442,6 @@
     .button,
     .button-secondary,
     .header-actions__action {
-      /* reset style from base.css */
       transition: color var(--header-content-transition-timing), border-color var(--header-content-transition-timing);
     }
   }
@@ -461,7 +474,6 @@
 
     --closed-underlay-height: 0px;
 
-    /* used to display the appropriate logo based on transparency state */
     --header-logo-display: none;
     --header-logo-inverse-display: block;
 
@@ -472,8 +484,7 @@
 
     z-index: var(--layer-overlay);
 
-    &[transparent='not-sticky'][data-sticky-state='active'],
-    &:has(.menu-list__link:not([aria-haspopup]):hover) {
+    &[transparent='not-sticky'][data-sticky-state='active'] {
       --header-logo-display: unset;
       --header-logo-inverse-display: unset;
       --color-foreground: inherit;
@@ -485,8 +496,7 @@
       --closed-underlay-height: 100%;
     }
 
-    /** For transparent header, apply inherit to rows when menu is not hovered */
-    &:not([data-sticky-state='active']):not(:has(.menu-list__link:is(:hover, [aria-expanded='true']))) .header__row {
+    .header__row {
       --color-foreground: inherit;
       --color-foreground-rgb: inherit;
       --color-border: inherit;
@@ -494,47 +504,6 @@
       --color-primary-button-background: inherit;
       --color-primary-button-text: inherit;
     }
-
-    /* Multiple selectors for performance: each simple :has() check is faster than one complex selector with multiple conditions */
-    &:has(.mega-menu__list:hover),
-    &:has(.menu-list__link:is(:hover, [aria-expanded='true'])),
-    &:has(.menu-list__list-item[slot='overflow'] .menu-list__link:is(:hover, [aria-expanded='true'])) {
-      --header-logo-display: unset;
-      --header-logo-inverse-display: unset;
-      --color-foreground: inherit;
-      --color-foreground-rgb: inherit;
-      --color-background: inherit;
-      --color-background-rgb: inherit;
-      --color-border: inherit;
-      --color-border-rgb: inherit;
-      --header-content-transition-timing: var(--submenu-animation-speed) var(--ease-out-cubic);
-    }
-  }
-
-  /* When top row has transparent background, make it inherit colors from header component */
-  [data-transparent-color-scheme='top']:hover .header__row--top,
-  [data-transparent-color-scheme='top']:focus-within .header__row--top,
-  [data-transparent-color-scheme='both']:hover .header__row--top,
-  [data-transparent-color-scheme='both']:focus-within .header__row--top {
-    --color-foreground: inherit;
-    --color-foreground-rgb: inherit;
-    --color-border: inherit;
-    --color-border-rgb: inherit;
-    --color-primary-button-background: inherit;
-    --color-primary-button-text: inherit;
-  }
-
-  /* When bottom row has transparent background, make it inherit colors from header component */
-  [data-transparent-color-scheme='bottom']:hover .header__row--bottom,
-  [data-transparent-color-scheme='bottom']:focus-within .header__row--bottom,
-  [data-transparent-color-scheme='both']:hover .header__row--bottom,
-  [data-transparent-color-scheme='both']:focus-within .header__row--bottom {
-    --color-foreground: inherit;
-    --color-foreground-rgb: inherit;
-    --color-border: inherit;
-    --color-border-rgb: inherit;
-    --color-primary-button-background: inherit;
-    --color-primary-button-text: inherit;
   }
 
   .header-section {
@@ -542,7 +511,6 @@
     z-index: var(--layer-heightened);
   }
 
-  /* need default values for non-flash transitions on first overflow menu open */
   #header-component {
     --submenu-height: 0px;
     --full-open-header-height: 0px;
@@ -556,7 +524,6 @@
   .header-section:has(> #header-component[sticky='scroll-up'][data-sticky-state='active']) {
     position: sticky;
 
-    /* Use -1 instead of 0 so intersection observer can track sticky state */
     top: -1px;
     z-index: var(--layer-sticky);
   }
@@ -580,9 +547,6 @@
     opacity: 0;
   }
 
-  /* ================================
-     * Underlays
-     * ================================ */
   .header__underlay {
     position: absolute;
     inset: 0;
@@ -605,7 +569,6 @@
       var(--color-scheme-bottom-row) var(--top-row-height) var(--header-height),
       var(--color-submenu) var(--header-height) 100%
     );
-    /* header-height is updated via js, the transition works automagically */
     transition: height var(--submenu-animation-speed) var(--ease-out-cubic);
   }
 
@@ -614,28 +577,8 @@
     position: absolute;
     inset: 0;
     box-shadow: var(--shadow-popover);
-    clip-path: inset(var(--header-height) 0 -100px 0); /* stylelint-disable-line */
+    clip-path: inset(var(--header-height) 0 -100px 0);
     transition: height var(--submenu-animation-speed) var(--ease-out-cubic);
-  }
-
-  /* When top row has transparent background, make underlay inherit colors from header component */
-  [data-transparent-color-scheme='top']:hover,
-  [data-transparent-color-scheme='top']:focus-within,
-  [data-transparent-color-scheme='both']:hover,
-  [data-transparent-color-scheme='both']:focus-within {
-    :is(.header__underlay-open, .header__underlay-closed) {
-      --color-scheme-top-row: var(--color-background);
-    }
-  }
-
-  /* When bottom row has transparent background, make underlay inherit colors from header component */
-  [data-transparent-color-scheme='bottom']:hover,
-  [data-transparent-color-scheme='bottom']:focus-within,
-  [data-transparent-color-scheme='both']:hover,
-  [data-transparent-color-scheme='both']:focus-within {
-    :is(.header__underlay-open, .header__underlay-closed) {
-      --color-scheme-bottom-row: var(--color-background);
-    }
   }
 
   [data-submenu-overlap-bottom-row] {
@@ -651,21 +594,16 @@
     }
   }
 
-  /* End Underlays ================ */
-
   .header__row {
-    /* The account component uses a different color scheme, but we need to override it to inherit the color of the header row */
     --color-account-icon: var(--color-foreground);
 
     position: relative;
 
-    /* Overwrite color from color scheme, background is controlled by the underlays */
     background-color: transparent;
 
     &:has(.mega-menu__list:hover),
     &:has(.menu-list__link[aria-haspopup]:is(:hover, [aria-expanded='true'])),
     &:has(.menu-list__list-item[slot='overflow'] .menu-list__link:is(:hover, [aria-expanded='true'])) {
-      /* Only elevate the row when the submenu is open to avoid overlapping other elevated content */
       z-index: var(--layer-heightened);
     }
   }
@@ -701,7 +639,6 @@
     display: flex;
     align-items: center;
 
-    /* on mobile, header__column nodes are ignored to create a new grid-template-area based on all visible content */
     @media screen and (max-width: 749px) {
       display: contents;
     }
@@ -733,13 +670,11 @@
   }
 
   .header__columns {
-    /* Three column layout */
     --header-left: 1fr;
     --header-center: auto;
     --header-right: 1fr;
     --header-template-columns: var(--header-left) var(--header-center) var(--header-right);
 
-    /* Mobile layout */
     --header-mobile-bookend: 44px;
 
     display: grid;
@@ -747,14 +682,12 @@
     grid-gap: var(--gap-xl);
     grid-template-columns: var(--header-template-columns);
 
-    /* If menu is in center column */
     &:has(.header__column--center header-menu) {
       --header-center: auto;
       --header-left: minmax(max-content, 1fr);
       --header-right: minmax(max-content, 1fr);
     }
 
-    /* If there is no center column, make the column the menu is in grow eagerly */
     &:where(:not(:has(.header__column--center))) {
       @media screen and (min-width: 750px) {
         --header-template-columns: var(--header-left) var(--header-right);
@@ -762,13 +695,11 @@
         grid-template-areas: 'left right';
       }
 
-      /* If the header-menu is in the right column */
       &:has(.header__column--right header-menu) {
         --header-right: auto;
         --header-left: minmax(max-content, 1fr);
       }
 
-      /* If the header-menu is in the left column */
       &:has(.header__column--left header-menu) {
         --header-left: auto;
         --header-right: minmax(max-content, 1fr);
@@ -808,8 +739,6 @@
     }
   }
 
-  /* not ideal but we need to duplicate these styles for when touch comes into play
-    We could avoid the duplication using js to set the data-menu-style attribute on small screens instead of using @media queries */
   #header-component[data-menu-style='drawer'] .header__columns {
     --header-template-columns: var(--header-mobile-bookend) var(--header-mobile-bookend) 1fr
       var(--header-mobile-bookend) var(--header-mobile-bookend);
@@ -842,15 +771,11 @@
     }
   }
 
-  /* Single column layout if there are no columns within */
   .header__columns:not(:has(.header__column)) {
     grid-template-columns: 1fr;
   }
 
-  /* Check for hover support to avoid unnecessary expensive recalculations when tapping on mobile */
   @media (hover: hover) {
-    /* Column-specific dimming effect when any interactive element is hovered
-        Multiple selectors for performance: each simple :has() check is faster than one complex selector with multiple conditions */
     .header__column:has(header-menu:hover),
     .header__column:has(.header-actions__action:hover),
     .header__column:has(.header__icon--menu:hover) {
@@ -863,14 +788,12 @@
     }
   }
 
-  /* Ensure smooth transitions for all interactive elements */
   header-menu,
   .header-actions__action,
   .header__icon--menu {
     transition: opacity var(--animation-speed) var(--animation-easing);
   }
 
-  /* Header action button styles */
   .header-actions__action {
     --button-color: var(--color-foreground);
     color: var(--button-color);
@@ -920,46 +843,36 @@
     }
   }
 
-  /* When the header is transparent, add a margin to a potential header-section below it */
   .header-section:has(.header[transparent]) + .shopify-section {
     margin-top: var(--header-height);
   }
-
-  /* When the header is transparent, and when there is no header-section below it, offset the first main-section with
-     * the height of the header
-     */
 
   main > .shopify-section:first-child .section:not(.disable-section-top-offset) {
     &.spacing-style,
     .spacing-style {
       --section-top-offset: calc(var(--header-height) * var(--transparent-header-offset-boolean));
 
-      /* Any nested sections should not be offset */
       :is(.spacing-style, .inherit-spacing) {
         --section-top-offset: 0px;
       }
     }
 
-    /* Make sticky content immediately stick to the top of the page */
     .sticky-content {
       margin-top: calc(var(--header-height) * var(--transparent-header-offset-boolean) * -1);
     }
   }
 
-  /* Optimize layout performance for hidden menus */
   .header-menu .menu-list__submenu {
     content-visibility: auto;
     contain-intrinsic-size: 0px 500px;
   }
 
-  /* Force visibility when open/animating and in overflow submenu to prevent layout issues */
   .header-menu details[open] .menu-list__submenu,
   .header-menu .menu-list__submenu[data-active],
   .header-menu .menu-list__list-item[slot='overflow'] .menu-list__submenu {
     content-visibility: visible;
   }
 
-  /* Dropdown Localization Styles */
   .dropdown-localization__button {
     display: flex;
     position: relative;
@@ -984,7 +897,7 @@
   .dropdown-localization__button .icon-flag {
     width: var(--menu-localization-font-size, var(--icon-size-sm));
     height: var(--menu-localization-font-size, var(--icon-size-sm));
-    clip-path: circle(50%); /* stylelint-disable-line */
+    clip-path: circle(50%);
     background-position: center;
     background-size: cover;
     margin-inline-end: 4px;
@@ -1076,7 +989,6 @@
     right: unset;
   }
 
-  /* Additional specificity due to dropdown-localization-component getting a low score */
   dropdown-localization-component .language-selector.language-selector {
     padding: 10px 8px 10px 16px;
   }
@@ -1197,6 +1109,12 @@
     {
       "type": "header",
       "content": "t:content.customer_account"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account_icon",
+      "label": "Show account icon",
+      "default": true
     },
     {
       "type": "paragraph",
@@ -1367,6 +1285,26 @@
     {
       "type": "header",
       "content": "t:content.appearance"
+    },
+    {
+      "type": "range",
+      "id": "icon_spacing",
+      "label": "Space between icons",
+      "min": -50,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "actions_margin_right",
+      "label": "Group margin right",
+      "min": 0,
+      "max": 30,
+      "step": 0.5,
+      "unit": "%",
+      "default": 0
     },
     {
       "type": "select",

@@ -31,7 +31,7 @@
       class="svg-wrapper {% if display_style != 'icon' %}desktop:hidden{% endif %}"
       aria-hidden="true"
     >
-      {{ 'icon-cart.svg' | inline_asset_content }}
+      {{ 'custom-cart.svg' | inline_asset_content }}
     </span>
 
     {% render 'cart-bubble', limit: 100 %}
@@ -63,7 +63,7 @@
   {% endif %}
   {{- block.shopify_attributes -}}
 >
-  {% if shop.customer_accounts_enabled %}
+  {% if shop.customer_accounts_enabled and section.settings.show_account_icon %}
     {% liquid
       assign account_actions_style = ''
       if display_style == 'text' and section
@@ -562,7 +562,7 @@
   }
 
   .header__column--right header-actions {
-    margin-inline-start: calc(var(--gap-md) * -1);
+    margin-inline-start: 0;
   }
 
   .header-actions__cart-icon {

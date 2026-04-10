@@ -1,4 +1,3 @@
-
 {%- doc -%}
   Renders a header menu block.
 
@@ -106,7 +105,14 @@
             {% endif %}
             ref="menuitem"
           >
-            <span class="menu-list__link-title">{{- link.title -}}</span>
+            <span class="menu-list__link-title">
+                {{- link.title -}}
+                {% if link.links != blank %}
+                <span class="menu-list__arrow">
+                     ▼
+                </span>
+                {% endif %}
+             </span>
           </a>
           {%- if link.links != blank -%}
             <div class="menu-list__submenu{{ color_scheme_classes }}" ref="submenu[]">
@@ -682,8 +688,15 @@
   }
 
   .mega-menu__submenu {
-    /* preserves the inherited grid layout when this submenu wrapper is used */
     display: contents;
+  }
+  .menu-list__arrow {
+    font-size: 10px;
+    margin-left: 6px;
+    transition: transform 0.2s ease;
+  }
+  .menu-list__link[aria-expanded='true'] .menu-list__arrow {
+    transform: rotate(180deg);
   }
 {% endstylesheet %}
 
