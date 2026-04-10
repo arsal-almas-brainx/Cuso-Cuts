@@ -188,20 +188,86 @@
   endif
 %}
 <style>
+  #header-component {
+    --full-open-header-height: var(--header-height) !important;
+    overflow: visible !important;
+    min-height: 0 !important; 
+  }
+
+  .header__underlay-open {
+    height: var(--header-height) !important;
+    transition: none !important;
+  }
+
+  .header__row {
+    height: var(--header-height) !important;
+    overflow: visible !important;
+  }
+  @media screen and (max-width: 749px) {
+    .header, .header__row, .header-section {
+      height: var(--header-height) !important;
+      max-height: 100px !important;
+    }
+    .header__columns {
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      display: flex !important; 
+      align-items: center !important;
+      justify-content: space-between !important;
+    }
+  }
   header-actions {
     display: flex !important;
     align-items: center !important;
     margin-right: {{ section.settings.actions_margin_right }}% !important;
-    column-gap: {{ section.settings.icon_spacing }}px !important; 
+    column-gap: 0 !important;
   }
+
   header-actions .header-actions__action,
   header-actions shopify-account,
   header-actions cart-icon {
     margin: 0 !important;
     margin-left: {{ section.settings.icon_spacing }}px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
+
   header-actions > *:first-child {
     margin-left: 0 !important;
+  }
+  {% if section.settings.enable_custom_icon_size %}
+    .header-actions__action svg,
+    .header-actions__action .svg-wrapper,
+    .header__icon--menu svg,
+    cart-icon .svg-wrapper,
+    shopify-account .svg-wrapper,
+    .search-action svg {
+      width: {{ section.settings.icon_width }}px !important;
+      height: {{ section.settings.icon_height }}px !important;
+      max-width: none !important;
+      max-height: none !important;
+    }
+    .header-actions__action {
+      --button-size: max({{ section.settings.icon_width }}px, {{ section.settings.icon_height }}px);
+      min-width: {{ section.settings.icon_width }}px;
+      min-height: {{ section.settings.icon_height }}px;
+    }
+    cart-icon .cart-count-bubble {
+      bottom: auto !important;
+      left: auto !important;
+    }
+  {% endif %}
+  .header[transparent]:not([data-sticky-state='active']) .header__underlay-closed {
+    background-color: rgba(0, 0, 0, {{ section.settings.transparent_header_darkness | divided_by: 100.0 }}) !important;
+    background-image: none !important;
+    height: 100% !important;
+    display: block !important;
+    opacity: 1 !important;
+  }
+
+  .header[transparent] .header__row {
+    z-index: 2 !important;
   }
 </style>
 
@@ -1297,6 +1363,38 @@
       "default": 0
     },
     {
+      "type": "header",
+      "content": "Custom Icon Sizing"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_custom_icon_size",
+      "label": "Enable custom icon size",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "icon_width",
+      "label": "Icon Width",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "visible_if": "{{ section.settings.enable_custom_icon_size }}"
+    },
+    {
+      "type": "range",
+      "id": "icon_height",
+      "label": "Icon Height",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "visible_if": "{{ section.settings.enable_custom_icon_size }}"
+    },
+    {
       "type": "range",
       "id": "actions_margin_right",
       "label": "Group margin right",
@@ -1505,6 +1603,17 @@
       "label": "t:settings.inverse",
       "default": "primary",
       "visible_if": "{{ section.settings.enable_transparent_header_home or section.settings.enable_transparent_header_product or section.settings.enable_transparent_header_collection }}"
+    },
+    {
+      "type": "range",
+      "id": "transparent_header_darkness",
+      "label": "Transparent Header Darkness",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "default": 0,
+      "info": "Adds a dark tint to the transparent header for better text readability."
     },
     {
       "type": "header",
