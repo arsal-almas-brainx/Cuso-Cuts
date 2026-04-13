@@ -25,8 +25,8 @@
             "vertical_alignment_flex_direction_column": "center",
             "gap": 8,
             "width": "custom",
-            "custom_width": 40,
-            "width_mobile": "fill",
+            "custom_width": 50,
+            "width_mobile": "custom",
             "custom_width_mobile": 100,
             "height": "fit",
             "custom_height": 100,
@@ -51,9 +51,13 @@
             "padding-inline-start": 0,
             "padding-inline-end": 0,
             "margin-block-start": -1,
-            "margin-block-end": 0,
+            "margin-block-end": 6,
             "margin-inline-start": 0,
-            "margin-inline-end": 48
+            "margin-inline-end": 39,
+            "margin-block-start-mobile": -6,
+            "margin-block-end-mobile": 86,
+            "margin-inline-start-mobile": 3,
+            "margin-inline-end-mobile": 0
           },
           "blocks": {
             "underlying_image_dhHhwd": {
@@ -61,7 +65,7 @@
               "name": "underlying",
               "settings": {
                 "image": "shopify://shop_images/Vector.png",
-                "width": "45%",
+                "width": "37%",
                 "height": "auto",
                 "m_top": -28,
                 "m_bottom": 0,
@@ -74,12 +78,13 @@
               "type": "text",
               "name": "t:names.text",
               "settings": {
-                "text": "<p>ALL NATURAL_SEASONINGS</p>",
+                "text": "<p>ALL NATURAL SEASONINGS</p>",
                 "width": "fit-content",
                 "custom_width": 50,
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "custom",
+                "custom_text_color": "#ffffff",
                 "custom_font": "inter_n4",
                 "custom_font_weight": "400",
                 "font": "var(--font-body--family)",
@@ -95,7 +100,12 @@
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
-                "padding-inline-end": 0
+                "padding-inline-end": 0,
+                "text_mobile": "",
+                "font_size_mobile": "0.812rem",
+                "custom_font_weight_mobile": "500",
+                "padding-block-start-mobile": 0,
+                "padding-block-end-mobile": 0
               },
               "blocks": {}
             },
@@ -103,12 +113,13 @@
               "type": "text",
               "name": "t:names.heading",
               "settings": {
-                "text": "<h2>Elevate Your Culinary Creations</h2>",
+                "text": "<h2>Elevate Your <br/>Culinary Creations</h2>",
                 "width": "custom",
                 "custom_width": 100,
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "custom",
+                "custom_text_color": "#ffffff",
                 "custom_font": "chivo_n7",
                 "custom_font_weight": "700",
                 "font": "var(--font-body--family)",
@@ -124,7 +135,12 @@
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
-                "padding-inline-end": 0
+                "padding-inline-end": 0,
+                "text_mobile": "",
+                "font_size_mobile": "2.5rem",
+                "custom_font_weight_mobile": "400",
+                "padding-block-start-mobile": 0,
+                "padding-block-end-mobile": 0
               },
               "blocks": {}
             },
@@ -138,6 +154,7 @@
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "custom",
+                "custom_text_color": "#d8d9d9",
                 "custom_font": "inter_n4",
                 "custom_font_weight": "400",
                 "font": "var(--font-body--family)",
@@ -150,10 +167,15 @@
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
-                "padding-block-start": 5,
+                "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
-                "padding-inline-end": 0
+                "padding-inline-end": 0,
+                "text_mobile": "<p>I am now the official Grillmaster of the Buffalo Bills <br/>and work with MLB, NBA, NFL, Traeger Grills, <br/>Chevrolet and Hyundai, Miller Lite, Draft Kings, <br/>Reynold’s Wrap, and more.</p>",
+                "font_size_mobile": "0.875rem",
+                "custom_font_weight_mobile": "400",
+                "padding-block-start-mobile": 0,
+                "padding-block-end-mobile": 0
               },
               "blocks": {}
             },
@@ -162,13 +184,13 @@
               "name": "t:names.group",
               "settings": {
                 "content_direction": "row",
-                "vertical_on_mobile": true,
+                "vertical_on_mobile": false,
                 "horizontal_alignment": "flex-start",
                 "vertical_alignment": "center",
                 "align_baseline": false,
                 "horizontal_alignment_flex_direction_column": "flex-start",
                 "vertical_alignment_flex_direction_column": "center",
-                "gap": 12,
+                "gap": 2,
                 "width": "fill",
                 "custom_width": 100,
                 "width_mobile": "fill",
@@ -195,10 +217,14 @@
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0,
-                "margin-block-start": 5,
-                "margin-block-end": 0,
+                "margin-block-start": 3,
+                "margin-block-end": -1,
                 "margin-inline-start": 0,
-                "margin-inline-end": 0
+                "margin-inline-end": 0,
+                "margin-block-start-mobile": 2,
+                "margin-block-end-mobile": 0,
+                "margin-inline-start-mobile": 0,
+                "margin-inline-end-mobile": 0
               },
               "blocks": {
                 "button_RAz9Cw": {
@@ -221,13 +247,26 @@
                     "mar_l": 0,
                     "mar_r": 2,
                     "button_font": "inter_n4",
+                    "font_size": 14,
                     "button_font_weight": "600",
                     "transparent_bg": false,
                     "bg_color": "#b92509",
                     "text_color": "#ffffff",
                     "border_color": "rgba(0,0,0,0)",
                     "border_width": 0,
-                    "border_radius": 24
+                    "border_radius": 24,
+                    "m_font_size": 12,
+                    "m_font_weight": "400",
+                    "m_radius": 20,
+                    "m_pad_t": 8,
+                    "m_pad_b": 8,
+                    "m_pad_l": 8,
+                    "m_pad_r": 8,
+                    "m_mar_t": 0,
+                    "m_mar_b": 2,
+                    "m_mar_l": 0,
+                    "m_custom_width_enable": true,
+                    "m_custom_width": 130
                   },
                   "blocks": {}
                 },
@@ -242,7 +281,7 @@
                     "full_width": false,
                     "width": "custom",
                     "custom_width": 230,
-                    "pad_t": 7,
+                    "pad_t": 6,
                     "pad_b": 7,
                     "pad_l": 10,
                     "pad_r": 10,
@@ -251,13 +290,26 @@
                     "mar_l": 0,
                     "mar_r": 2,
                     "button_font": "inter_n4",
+                    "font_size": 14,
                     "button_font_weight": "600",
                     "transparent_bg": true,
                     "bg_color": "#b92509",
                     "text_color": "#ffffff",
                     "border_color": "#fafafa",
                     "border_width": 1,
-                    "border_radius": 24
+                    "border_radius": 24,
+                    "m_font_size": 12,
+                    "m_font_weight": "400",
+                    "m_radius": 20,
+                    "m_pad_t": 5,
+                    "m_pad_b": 5,
+                    "m_pad_l": 10,
+                    "m_pad_r": 10,
+                    "m_mar_t": 0,
+                    "m_mar_b": 2,
+                    "m_mar_l": 0,
+                    "m_custom_width_enable": true,
+                    "m_custom_width": 175
                   },
                   "blocks": {}
                 }
@@ -266,6 +318,27 @@
                 "button_RAz9Cw",
                 "button_we4YNk"
               ]
+            },
+            "review_y4emGW": {
+              "type": "review",
+              "name": "Review Stars",
+              "settings": {
+                "custom_rating": 5,
+                "star_fill_color": "#b92509",
+                "star_size": 25,
+                "stars_gap": 0,
+                "rating_text": "4.8/5.00 (Over 20,000 happy customers)",
+                "rating_font": "inter_n4",
+                "rating_font_weight": "400",
+                "rating_font_size": 16,
+                "text_star_gap": 8,
+                "m_star_size": 20,
+                "m_rating_font_size": 13,
+                "m_rating_font_weight": "500",
+                "width": "fit-content",
+                "alignment": "left"
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -273,7 +346,8 @@
             "text_x8RcaU",
             "text_nUDcBC",
             "text_pLqGXh",
-            "group_C6UymC"
+            "group_C6UymC",
+            "review_y4emGW"
           ]
         }
       },
@@ -286,8 +360,9 @@
         "image_1": "shopify://shop_images/Frame_164567.jpg",
         "media_type_2": "image",
         "stack_media_on_mobile": false,
-        "custom_mobile_media": false,
+        "custom_mobile_media": true,
         "media_type_1_mobile": "image",
+        "image_1_mobile": "shopify://shop_images/mobile.jpg",
         "media_type_2_mobile": "image",
         "link": "",
         "open_in_new_tab": false,
