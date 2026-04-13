@@ -11,9 +11,30 @@
   {% render 'group', children: children, settings: block.settings, shopify_attributes: block.shopify_attributes %}
 {%- enddoc -%}
 
+{%- capture group_id -%}group-{{ section.id }}-{{ block.id }}{%- endcapture -%}
+
+<style>
+  .group-block--{{ group_id }} {
+    --margin-bs: {{ settings.margin-block-start | default: 0 }}%;
+    --margin-be: {{ settings.margin-block-end | default: 0 }}%;
+    --margin-is: {{ settings.margin-inline-start | default: 0 }}%;
+    --margin-ie: {{ settings.margin-inline-end | default: 0 }}%;
+  }
+
+  @media screen and (max-width: 767px) {
+    .group-block--{{ group_id }} {
+      --margin-bs: {{ settings.margin-block-start-mobile | default: settings.margin-block-start | default: 0 }}%;
+      --margin-be: {{ settings.margin-block-end-mobile | default: settings.margin-block-end | default: 0 }}%;
+      --margin-is: {{ settings.margin-inline-start-mobile | default: settings.margin-inline-start | default: 0 }}%;
+      --margin-ie: {{ settings.margin-inline-end-mobile | default: settings.margin-inline-end | default: 0 }}%;
+    }
+  }
+</style>
+
 <div
   class="
     group-block
+    group-block--{{ group_id }}
     group-block--height-{{ settings.height }}
     group-block--width-{{ settings.width }}
     border-style
@@ -27,10 +48,10 @@
     {% render 'spacing-style', settings: settings %}
     {% render 'size-style', settings: settings %}
     
-    margin-block-start: {{ settings.margin-block-start | default: 0 }}%;
-    margin-block-end: {{ settings.margin-block-end | default: 0 }}%;
-    margin-inline-start: {{ settings.margin-inline-start | default: 0 }}%;
-    margin-inline-end: {{ settings.margin-inline-end | default: 0 }}%;
+    margin-block-start: var(--margin-bs);
+    margin-block-end: var(--margin-be);
+    margin-inline-start: var(--margin-is);
+    margin-inline-end: var(--margin-ie);
     
     {{ style }}
   "

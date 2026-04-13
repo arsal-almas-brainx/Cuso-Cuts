@@ -435,6 +435,63 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    },
+    {
+      "type": "richtext",
+      "id": "text_mobile",
+      "label": "Text (Mobile)",
+      "info": "If left blank, desktop text will be used."
+    },
+    {
+      "type": "header",
+      "content": "Mobile Typography"
+    },
+    {
+      "type": "select",
+      "id": "font_size_mobile",
+      "label": "Mobile Font Size",
+      "options": [
+        { "value": "", "label": "Default" },
+        { "value": "0.75rem", "label": "12px" },
+        { "value": "0.812rem", "label": "13px" },
+        { "value": "0.875rem", "label": "14px" },
+        { "value": "1rem", "label": "16px" },
+        { "value": "1.25rem", "label": "20px" },
+        { "value": "1.5rem", "label": "24px" },
+        { "value": "2rem", "label": "32px" },
+        { "value": "2.5rem", "label": "40px" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "custom_font_weight_mobile",
+      "label": "Mobile Font Weight",
+      "options": [
+        { "value": "inherit", "label": "Same as Desktop" },
+        { "value": "300", "label": "300 Light" },
+        { "value": "400", "label": "400 Normal" },
+        { "value": "500", "label": "500 light bold" },
+        { "value": "600", "label": "600  bold" },
+        { "value": "700", "label": " 700 extra Bold" }
+      ],
+      "default": "inherit"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start-mobile",
+      "label": "Mobile Top Padding",
+      "min": 0, "max": 100, "step": 1, "unit": "px", "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end-mobile",
+      "label": "Mobile Bottom Padding",
+      "min": 0, "max": 100, "step": 1, "unit": "px", "default": 0
     }
   ],
   "presets": [

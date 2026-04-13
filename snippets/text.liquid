@@ -9,7 +9,12 @@
 
 {% liquid
   assign block_settings = block.settings
-  assign plain_text = block_settings.text | strip_newlines | strip
+  
+  # Decide which text to show based on screen (handled via CSS classes later)
+  assign desktop_text = block_settings.text
+  assign mobile_text = block_settings.text_mobile | default: desktop_text
+  
+  assign plain_text = desktop_text | strip_newlines | strip
   assign visible_text = plain_text | strip_html
   
   assign text_width = width | default: block_settings.width
@@ -60,12 +65,53 @@
 
 <style>
   {{ custom_font | font_face: display: 'swap' }}
+  
+  /* Desktop font styling - Scoped to this specific block */
   .text-block--{{ block.id }}, 
   .text-block--{{ block.id }} * {
     font-family: {{ custom_font.family }}, {{ custom_font.fallback_families }} !important;
     font-weight: {{ custom_weight }} !important;
     {% if block_settings.custom_text_color != blank %}
       color: var(--custom-text-color) !important;
+    {% endif %}
+  }
+
+  /* Desktop/Mobile Text Toggle - Scoped to this block only */
+  .text-block--{{ block.id }} .text-mobile-only { 
+    display: none !important; 
+  }
+
+  .text-block--{{ block.id }} .text-desktop-only { 
+    display: block !important; 
+  }
+
+  @media screen and (max-width: 749px) {
+    .text-block--{{ block.id }} {
+      {% if block_settings['padding-block-start-mobile'] != blank %}
+        --padding-block-start: {{ block_settings['padding-block-start-mobile'] }}px !important;
+      {% endif %}
+      {% if block_settings['padding-block-end-mobile'] != blank %}
+        --padding-block-end: {{ block_settings['padding-block-end-mobile'] }}px !important;
+      {% endif %}
+    }
+    
+    .text-block--{{ block.id }},
+    .text-block--{{ block.id }} * {
+      {% if block_settings.font_size_mobile != blank and block_settings.font_size_mobile != '' %}
+        font-size: {{ block_settings.font_size_mobile }} !important;
+      {% endif %}
+      {% if block_settings.custom_font_weight_mobile != 'inherit' and block_settings.custom_font_weight_mobile != blank %}
+        font-weight: {{ block_settings.custom_font_weight_mobile }} !important;
+      {% endif %}
+    }
+
+    {% if block_settings.text_mobile != blank %}
+      .text-block--{{ block.id }} .text-desktop-only { 
+        display: none !important; 
+      }
+      .text-block--{{ block.id }} .text-mobile-only { 
+        display: block !important; 
+      }
     {% endif %}
   }
 </style>
@@ -110,7 +156,12 @@
   </div>
 {% elsif plain_text != blank %}
   <{{ element }} {{ attributes | strip_newlines | strip }}>
-    {{ block.settings.text }}
+    {% if block_settings.text_mobile != blank %}
+      <span class="text-desktop-only">{{ desktop_text }}</span>
+      <span class="text-mobile-only">{{ mobile_text }}</span>
+    {% else %}
+      {{ desktop_text }}
+    {% endif %}
   </{{ element }}>
 {% endif %}
 

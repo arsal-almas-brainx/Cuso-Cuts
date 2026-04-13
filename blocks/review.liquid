@@ -22,9 +22,8 @@
     assign svg_filled_stars = rating | floor | plus: decimal_rounded
   %}
 
-  <div
-    class="rating-wrapper rating-wrapper--{{ block.id }} justify-{{ block_settings.alignment }}"
-    style="
+  <style>
+    .rating-wrapper--{{ block.id }} {
       --star-fill-color: {{ block_settings.star_fill_color }};
       --star-size: {{ block_settings.star_size }}px;
       --stars-gap: {{ block_settings.stars_gap }}px;
@@ -32,7 +31,19 @@
       --rating-text-font: {{ block_settings.rating_font.family }}, {{ block_settings.rating_font.fallback_families }};
       --rating-text-weight: {{ block_settings.rating_font_weight }};
       --rating-text-size: {{ block_settings.rating_font_size }}px;
-    "
+    }
+
+    @media screen and (max-width: 767px) {
+      .rating-wrapper--{{ block.id }} {
+        --star-size: {{ block_settings.m_star_size }}px !important;
+        --rating-text-weight: {{ block_settings.m_rating_font_weight }} !important;
+        --rating-text-size: {{ block_settings.m_rating_font_size }}px !important;
+      }
+    }
+  </style>
+
+  <div
+    class="rating-wrapper rating-wrapper--{{ block.id }} justify-{{ block_settings.alignment }}"
     {{ block.shopify_attributes }}
   >
     <svg
@@ -198,30 +209,12 @@
       "id": "rating_font_weight",
       "label": "Font Weight",
       "options": [
-        {
-          "value": "300",
-          "label": "Light"
-        },
-        {
-          "value": "400",
-          "label": "Normal"
-        },
-        {
-          "value": "500",
-          "label": "Medium"
-        },
-        {
-          "value": "600",
-          "label": "Semi Bold"
-        },
-        {
-          "value": "700",
-          "label": "Bold"
-        },
-        {
-          "value": "800",
-          "label": "Extra Bold"
-        }
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
       ],
       "default": "400"
     },
@@ -247,6 +240,43 @@
     },
     {
       "type": "header",
+      "content": "Mobile Settings (Max 767px)"
+    },
+    {
+      "type": "range",
+      "id": "m_star_size",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile Star Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "m_rating_font_size",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile Font Size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "m_rating_font_weight",
+      "label": "Mobile Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
       "content": "Layout"
     },
     {
@@ -254,14 +284,8 @@
       "id": "width",
       "label": "Width",
       "options": [
-        {
-          "value": "fit-content",
-          "label": "Fit Content"
-        },
-        {
-          "value": "100%",
-          "label": "Full Width"
-        }
+        { "value": "fit-content", "label": "Fit Content" },
+        { "value": "100%", "label": "Full Width" }
       ],
       "default": "fit-content"
     },

@@ -8,7 +8,6 @@
 {% liquid
   assign bs = block.settings
   assign custom_font = bs.button_font
-  
   assign button_uid = block.id | append: id_suffix
 
   if bs.transparent_bg
@@ -40,20 +39,13 @@
     width: {% if bs.full_width %}100%{% else %}auto{% endif %};
     justify-content: flex-start;
     vertical-align: middle;
-    
-    /* Percentage Margins */
+
     margin-top: {{ bs.mar_t | default: 0 }}%;
     margin-bottom: {{ bs.mar_b | default: 0 }}%;
     margin-left: {{ bs.mar_l | default: 0 }}%;
     margin-right: {{ bs.mar_r | default: 0 }}%;
   }
-  
-  .group-block-content > .btn-wrapper--{{ button_uid }},
-  .group-block-content > [data-shopify-editor-block*="{{ block.id }}"] .btn-wrapper--{{ button_uid }} {
-    margin: 0;
-  }
 
-  /* Target the <a> tag for background, border, and radius */
   .btn--{{ button_uid }} {
     display: inline-flex;
     align-items: center;
@@ -61,32 +53,62 @@
     gap: 10px;
     width: {{ final_width }};
     min-width: fit-content;
-    
+
     background-color: {{ final_bg }};
     color: {{ bs.text_color | default: '#ffffff' }} !important;
-    
-    /* Detailed Border Logic for Shopify Editor Stability */
+
     border-style: solid;
     border-width: {{ bs.border_width | default: 0 }}px;
     border-color: {{ bs.border_color | default: '#000000' }};
     border-radius: {{ bs.border_radius | default: 0 }}px;
-    
-    /* Percentage Padding */
+
     padding-top: {{ bs.pad_t | default: 0 }}%;
     padding-bottom: {{ bs.pad_b | default: 0 }}%;
     padding-left: {{ bs.pad_l | default: 0 }}%;
     padding-right: {{ bs.pad_r | default: 0 }}%;
 
-    /* Typography */
     font-family: {{ custom_font.family }}, {{ custom_font.fallback_families }};
     font-weight: {{ bs.button_font_weight | default: 400 }};
     font-style: {{ custom_font.style }};
     
+    font-size: {{ bs.font_size | default: 16 }}px; 
+
     text-decoration: none;
     line-height: 1.2;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
     box-sizing: border-box;
+  }
+
+  /* MOBILE STYLES (Max 767px) */
+  @media screen and (max-width: 767px) {
+    .btn-wrapper--{{ button_uid }} {
+      display: inline-flex !important;
+      width: auto !important; 
+      
+      margin-top: {{ bs.m_mar_t | default: bs.mar_t }}% !important;
+      margin-bottom: {{ bs.m_mar_b | default: bs.mar_b }}% !important;
+      margin-left: {{ bs.m_mar_l | default: bs.mar_l }}% !important;
+      margin-right: {{ bs.m_mar_r | default: bs.mar_r }}% !important;
+    }
+
+    .btn--{{ button_uid }} {
+      {% if bs.m_custom_width_enable %}
+        width: {{ bs.m_custom_width }}px !important;
+      {% else %}
+        width: auto !important;
+      {% endif %}
+      min-width: unset !important;
+
+      font-size: {{ bs.m_font_size | default: 14 }}px !important;
+      font-weight: {{ bs.m_font_weight | default: 400 }} !important;
+      border-radius: {{ bs.m_radius | default: bs.border_radius }}px !important;
+
+      padding-top: {{ bs.m_pad_t | default: bs.pad_t }}% !important;
+      padding-bottom: {{ bs.m_pad_b | default: bs.pad_b }}% !important;
+      padding-left: {{ bs.m_pad_l | default: bs.pad_l }}% !important;
+      padding-right: {{ bs.m_pad_r | default: bs.pad_r }}% !important;
+    }
   }
 
   .btn--{{ button_uid }}:hover {

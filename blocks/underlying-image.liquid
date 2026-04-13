@@ -31,6 +31,12 @@
     display: block;
   }
 
+  @media screen and (max-width: 767px) {
+    #block--{{ block.id }} {
+      display: none !important;
+    }
+  }
+
   #block--{{ block.id }} .underlying-image-block__img {
     width: 100%;
     height: 100%;
