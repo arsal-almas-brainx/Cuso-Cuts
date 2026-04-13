@@ -587,6 +587,10 @@
   .hero__content-wrapper .group-block-content {
     position: relative;
   }
+  .group-block-content {
+    position: relative;
+    z-index: 1;
+  }
 
   .hero__media-grid {
     position: absolute;
@@ -754,6 +758,9 @@
   "blocks": [
     {
       "type": "@theme"
+    },
+    {
+      "type": "underlying-image"
     },
     {
       "type": "text"
@@ -1241,6 +1248,14 @@
     }
   ],
   "presets": [
+    {
+      "name": "Hero with Image Layer",
+      "blocks": [
+        {
+          "type": "underlying-image"
+        }
+      ]
+    },
     {
       "name": "t:names.hero",
       "category": "t:categories.banners",

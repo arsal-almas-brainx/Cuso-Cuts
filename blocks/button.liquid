@@ -1,5 +1,4 @@
-
-{% render 'button', link: block.settings.link %}
+{% render 'button', link: block.settings.link, block: block %}
 
 {% schema %}
 {
@@ -24,33 +23,26 @@
       "default": false
     },
     {
-      "type": "select",
-      "id": "style_class",
-      "label": "t:settings.style",
-      "options": [
-        {
-          "value": "button",
-          "label": "t:options.primary"
-        },
-        {
-          "value": "button-secondary",
-          "label": "t:options.secondary"
-        },
-        {
-          "value": "link",
-          "label": "t:options.link"
-        }
-      ],
-      "default": "button"
+      "type": "checkbox",
+      "id": "add_arrow",
+      "label": "Add arrow after text",
+      "default": false
     },
     {
       "type": "header",
-      "content": "t:content.size"
+      "content": "t:content.layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full Width (Force New Line)",
+      "default": false,
+      "info": "If unchecked, buttons will sit side-by-side if space allows."
     },
     {
       "type": "select",
       "id": "width",
-      "label": "t:settings.width_desktop",
+      "label": "Button Width Mode",
       "options": [
         {
           "value": "fit-content",
@@ -66,40 +58,109 @@
     {
       "type": "range",
       "id": "custom_width",
-      "label": "t:settings.custom_width",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "%",
-      "default": 100,
-      "visible_if": "{{ block.settings.width == \"custom\" }}"
+      "label": "Custom Width (px)",
+      "min": 50,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 200,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding (Inside %)"
+    },
+    { "type": "range", "id": "pad_t", "label": "Top", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 5 },
+    { "type": "range", "id": "pad_b", "label": "Bottom", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 5 },
+    { "type": "range", "id": "pad_l", "label": "Left", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 10 },
+    { "type": "range", "id": "pad_r", "label": "Right", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 10 },
+    {
+      "type": "header",
+      "content": "Margin (Outside %)"
+    },
+    { "type": "range", "id": "mar_t", "label": "Top", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 0 },
+    { "type": "range", "id": "mar_b", "label": "Bottom", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 2 },
+    { "type": "range", "id": "mar_l", "label": "Left", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 0 },
+    { "type": "range", "id": "mar_r", "label": "Right", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 2 },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "button_font",
+      "label": "Font Family",
+      "default": "inter_n4"
     },
     {
       "type": "select",
-      "id": "width_mobile",
-      "label": "t:settings.width_mobile",
+      "id": "button_font_weight",
+      "label": "Font Weight",
       "options": [
-        {
-          "value": "fit-content",
-          "label": "t:options.fit_content"
-        },
-        {
-          "value": "custom",
-          "label": "t:options.custom"
-        }
+        { "value": "100", "label": "100 - Thin" },
+        { "value": "200", "label": "200 - Extra Light" },
+        { "value": "300", "label": "300 - Light" },
+        { "value": "400", "label": "400 - Normal" },
+        { "value": "500", "label": "500 - Medium" },
+        { "value": "600", "label": "600 - Semi Bold" },
+        { "value": "700", "label": "700 - Bold" },
+        { "value": "800", "label": "800 - Extra Bold" },
+        { "value": "900", "label": "900 - Black" }
       ],
-      "default": "fit-content"
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_bg",
+      "label": "Transparent Background",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#000000",
+      "visible_if": "{{ block.settings.transparent_bg == false }}"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Border Settings"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#000000"
     },
     {
       "type": "range",
-      "id": "custom_width_mobile",
-      "label": "t:settings.custom_width",
+      "id": "border_width",
+      "label": "Border Width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border Radius",
       "min": 0,
       "max": 100,
       "step": 1,
-      "unit": "%",
-      "default": 100,
-      "visible_if": "{{ block.settings.width_mobile == \"custom\" }}"
+      "unit": "px",
+      "default": 0
     }
   ],
   "presets": [

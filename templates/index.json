@@ -50,18 +50,33 @@
             "padding-block-end": 0,
             "padding-inline-start": 0,
             "padding-inline-end": 0,
-            "margin-block-start": 0,
+            "margin-block-start": -1,
             "margin-block-end": 0,
             "margin-inline-start": 0,
-            "margin-inline-end": 50
+            "margin-inline-end": 48
           },
           "blocks": {
+            "underlying_image_dhHhwd": {
+              "type": "underlying-image",
+              "name": "underlying",
+              "settings": {
+                "image": "shopify://shop_images/Vector.png",
+                "width": "45%",
+                "height": "auto",
+                "m_top": -12,
+                "m_bottom": 0,
+                "m_left": -4,
+                "m_right": 0
+              },
+              "blocks": {}
+            },
             "text_x8RcaU": {
               "type": "text",
               "name": "t:names.text",
               "settings": {
                 "text": "<p>ALL NATURAL_SEASONINGS</p>",
                 "width": "fit-content",
+                "custom_width": 50,
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "custom",
@@ -89,11 +104,12 @@
               "name": "t:names.heading",
               "settings": {
                 "text": "<h2>Elevate Your Culinary Creations</h2>",
-                "width": "fit-content",
+                "width": "custom",
+                "custom_width": 100,
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "custom",
-                "custom_font": "chivo_n8",
+                "custom_font": "chivo_n7",
                 "custom_font_weight": "700",
                 "font": "var(--font-body--family)",
                 "font_size": "3.625rem",
@@ -111,11 +127,153 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "text_pLqGXh": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<p>I am now the official Grillmaster of the Buffalo Bills and work with MLB, <br/>NBA, NFL, Traeger Grills, Chevrolet and Hyundai, Miller Lite, Draft<br/> Kings, Reynold’s Wrap, and more.</p>",
+                "width": "fit-content",
+                "custom_width": 100,
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "custom",
+                "custom_font": "inter_n4",
+                "custom_font_weight": "400",
+                "font": "var(--font-body--family)",
+                "font_size": "0.973rem",
+                "line_height": "loose",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "nowrap",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 5,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "group_C6UymC": {
+              "type": "group",
+              "name": "t:names.group",
+              "settings": {
+                "content_direction": "row",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 12,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "inherit_color_scheme": true,
+                "color_scheme": "",
+                "background_media": "none",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0,
+                "margin-block-start": 0,
+                "margin-block-end": 0,
+                "margin-inline-start": 0,
+                "margin-inline-end": 0
+              },
+              "blocks": {
+                "button_RAz9Cw": {
+                  "type": "button",
+                  "name": "t:names.button",
+                  "settings": {
+                    "label": "SHOP ALL",
+                    "link": "shopify://collections/all",
+                    "open_in_new_tab": false,
+                    "add_arrow": true,
+                    "full_width": false,
+                    "width": "custom",
+                    "custom_width": 170,
+                    "pad_t": 9,
+                    "pad_b": 9,
+                    "pad_l": 10,
+                    "pad_r": 10,
+                    "mar_t": 0,
+                    "mar_b": 2,
+                    "mar_l": 0,
+                    "mar_r": 2,
+                    "button_font": "inter_n4",
+                    "button_font_weight": "600",
+                    "transparent_bg": false,
+                    "bg_color": "#b92509",
+                    "text_color": "#ffffff",
+                    "border_color": "rgba(0,0,0,0)",
+                    "border_width": 0,
+                    "border_radius": 24
+                  },
+                  "blocks": {}
+                },
+                "button_we4YNk": {
+                  "type": "button",
+                  "name": "t:names.button",
+                  "settings": {
+                    "label": "BUILD YOUR PACK",
+                    "link": "shopify://collections/all",
+                    "open_in_new_tab": false,
+                    "add_arrow": true,
+                    "full_width": false,
+                    "width": "custom",
+                    "custom_width": 240,
+                    "pad_t": 9,
+                    "pad_b": 9,
+                    "pad_l": 10,
+                    "pad_r": 10,
+                    "mar_t": 0,
+                    "mar_b": 2,
+                    "mar_l": 0,
+                    "mar_r": 2,
+                    "button_font": "inter_n4",
+                    "button_font_weight": "600",
+                    "transparent_bg": true,
+                    "bg_color": "#b92509",
+                    "text_color": "#ffffff",
+                    "border_color": "#fafafa",
+                    "border_width": 0,
+                    "border_radius": 24
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "button_RAz9Cw",
+                "button_we4YNk"
+              ]
             }
           },
           "block_order": [
+            "underlying_image_dhHhwd",
             "text_x8RcaU",
-            "text_nUDcBC"
+            "text_nUDcBC",
+            "text_pLqGXh",
+            "group_C6UymC"
           ]
         }
       },

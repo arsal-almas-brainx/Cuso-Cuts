@@ -28,9 +28,24 @@
         {
           "value": "100%",
           "label": "t:options.fill"
+        },
+        {
+          "value": "custom",
+          "label": "Custom Width"
         }
       ],
       "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Custom Width (%)",
+      "min": 10,
+      "max": 150,
+      "step": 2,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
     },
     {
       "type": "select",
@@ -180,6 +195,10 @@
         {
           "value": "0.875rem",
           "label": "14px"
+        },
+        {
+          "value": "0.973rem",
+          "label": "15px"
         },
         {
           "value": "1rem",
