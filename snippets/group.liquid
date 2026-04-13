@@ -26,6 +26,12 @@
     {% render 'border-override', settings: settings %}
     {% render 'spacing-style', settings: settings %}
     {% render 'size-style', settings: settings %}
+    
+    margin-block-start: {{ settings.margin-block-start | default: 0 }}%;
+    margin-block-end: {{ settings.margin-block-end | default: 0 }}%;
+    margin-inline-start: {{ settings.margin-inline-start | default: 0 }}%;
+    margin-inline-end: {{ settings.margin-inline-end | default: 0 }}%;
+    
     {{ style }}
   "
   {{ shopify_attributes }}
@@ -83,7 +89,6 @@
     }
   }
 
-  /* Needs the .group-block__link ~ to be specific enough to take effect. */
   .group-block__link ~ .group-block-content--design-mode {
     pointer-events: auto;
   }

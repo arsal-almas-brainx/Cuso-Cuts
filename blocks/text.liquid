@@ -109,6 +109,33 @@
       "info": "t:info.edit_presets_in_theme_settings"
     },
     {
+      "type": "header",
+      "content": "Custom Font Settings"
+    },
+    {
+      "type": "font_picker",
+      "id": "custom_font",
+      "label": "Font Family",
+      "default": "inter_n4"
+    },
+    {
+      "type": "select",
+      "id": "custom_font_weight",
+      "label": "Font Weight",
+      "options": [
+        { "value": "100", "label": "100 - Thin" },
+        { "value": "200", "label": "200 - Extra Light" },
+        { "value": "300", "label": "300 - Light" },
+        { "value": "400", "label": "400 - Normal" },
+        { "value": "500", "label": "500 - Medium" },
+        { "value": "600", "label": "600 - Semi Bold" },
+        { "value": "700", "label": "700 - Bold" },
+        { "value": "800", "label": "800 - Extra Bold" },
+        { "value": "900", "label": "900 - Black" }
+      ],
+      "default": "400"
+    },
+    {
       "type": "select",
       "id": "font",
       "label": "t:settings.font",
@@ -185,6 +212,10 @@
         {
           "value": "3.5rem",
           "label": "56px"
+        },
+        { 
+          "value": "3.625rem",
+          "label": "58px"
         },
         {
           "value": "4.5rem",

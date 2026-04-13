@@ -12,6 +12,9 @@
   assign plain_text = block_settings.text | strip_newlines | strip
   assign visible_text = plain_text | strip_html
   assign text_width = width | default: block_settings.width
+  
+  assign custom_font = block_settings.custom_font
+  assign custom_weight = block_settings.custom_font_weight
 
   if block_settings.font_size contains 'heading-lg' or block_settings.font_size contains 'heading-xl'
     assign type = 'display'
@@ -49,6 +52,10 @@
   endcapture
 %}
 
+<style>
+  {{ custom_font | font_face: display: 'swap' }}
+</style>
+
 {% capture attributes %}
   class="{{ class }} spacing-style text-block text-block--{{ block.id }} {{ block_settings.type_preset }}
     {{ text_block_classes }}
@@ -57,6 +64,10 @@
   style="
     {% render 'spacing-padding', settings: block_settings %}
     {% render 'typography-style', settings: block_settings %}
+    font-family: {{ custom_font.family }}, {{ custom_font.fallback_families }};
+    font-weight: {{ custom_weight }};
+    font-style: {{ custom_font.style }};
+
     --width: {{ text_width }};
     --max-width: var(--max-width--{{ type }}-{{ block_settings.max_width }});
     {% if text_width == "100%" %}
@@ -73,10 +84,6 @@
 {% endcapture %}
 
 {% liquid
-  # {{ attributes }} must be on the immediate HTML parent of the text to preserve
-  # the click-to-edit connection in the theme editor. Any break between the text,
-  # including if-statements, will break the connection.
-
   assign element = 'div'
   if is_rte
     assign element = 'rte-formatter'
@@ -131,11 +138,12 @@
     max-inline-size: min(100%, var(--max-width, 100%));
     text-align: var(--text-align, var(--text-align-default));
     text-wrap: var(--text-wrap);
+    font-weight: inherit !important;
+    font-family: inherit !important;
   }
 
   .text-block:not(.text-block--full-width).rte,
   .text-block:not(.text-block--full-width).paragraph {
-    /* Safari doesn't support pretty, so fallback to balance */
     text-wrap: balance;
     text-wrap: pretty;
   }
@@ -144,7 +152,6 @@
     text-wrap: balance;
   }
 
-  /* Hide underline unless text is using paragraph styles. */
   .text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) a {
     text-decoration-color: transparent;
   }
@@ -206,7 +213,6 @@
     background-color: var(--text-background-color);
     border-radius: var(--text-corner-radius);
 
-    /* To avoid text being cropped when using a border radius we add a minimum padding. */
     padding-block-start: max(var(--text-padding), var(--padding-block-start, 0));
     padding-block-end: max(var(--text-padding), var(--padding-block-end, 0));
     padding-inline-start: max(var(--text-padding), var(--padding-inline-start, 0));
