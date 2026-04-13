@@ -63,7 +63,7 @@
                 "image": "shopify://shop_images/Vector.png",
                 "width": "45%",
                 "height": "auto",
-                "m_top": -12,
+                "m_top": -28,
                 "m_bottom": 0,
                 "m_left": -4,
                 "m_right": 0
@@ -195,7 +195,7 @@
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
                 "padding-inline-end": 0,
-                "margin-block-start": 0,
+                "margin-block-start": 5,
                 "margin-block-end": 0,
                 "margin-inline-start": 0,
                 "margin-inline-end": 0
@@ -241,9 +241,9 @@
                     "add_arrow": true,
                     "full_width": false,
                     "width": "custom",
-                    "custom_width": 240,
-                    "pad_t": 9,
-                    "pad_b": 9,
+                    "custom_width": 230,
+                    "pad_t": 7,
+                    "pad_b": 7,
                     "pad_l": 10,
                     "pad_r": 10,
                     "mar_t": 0,
@@ -256,7 +256,7 @@
                     "bg_color": "#b92509",
                     "text_color": "#ffffff",
                     "border_color": "#fafafa",
-                    "border_width": 0,
+                    "border_width": 1,
                     "border_radius": 24
                   },
                   "blocks": {}
@@ -283,7 +283,7 @@
       "name": "t:names.hero",
       "settings": {
         "media_type_1": "image",
-        "image_1": "shopify://shop_images/Frame_164567_2.png",
+        "image_1": "shopify://shop_images/Frame_164567.jpg",
         "media_type_2": "image",
         "stack_media_on_mobile": false,
         "custom_mobile_media": false,
@@ -303,7 +303,7 @@
         "section_height": "medium",
         "section_height_custom": 50,
         "color_scheme": "scheme-6",
-        "toggle_overlay": true,
+        "toggle_overlay": false,
         "overlay_color": "#12121266",
         "overlay_style": "solid",
         "gradient_direction": "to bottom",

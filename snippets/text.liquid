@@ -61,9 +61,12 @@
 <style>
   {{ custom_font | font_face: display: 'swap' }}
   .text-block--{{ block.id }}, 
-  .text-block--{{ block.id }} > * {
+  .text-block--{{ block.id }} * {
     font-family: {{ custom_font.family }}, {{ custom_font.fallback_families }} !important;
     font-weight: {{ custom_weight }} !important;
+    {% if block_settings.custom_text_color != blank %}
+      color: var(--custom-text-color) !important;
+    {% endif %}
   }
 </style>
 
@@ -78,6 +81,7 @@
     
     --width: {{ final_width }};
     --max-width: var(--max-width--{{ type }}-{{ block_settings.max_width }});
+    --custom-text-color: {{ block_settings.custom_text_color | default: 'inherit' }};
     
     {% if text_width == "100%" or text_width == "custom" %}
       --text-align: {{ block_settings.alignment }};

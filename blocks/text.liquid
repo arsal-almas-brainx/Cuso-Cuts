@@ -1,5 +1,3 @@
-
-
 {% render 'text', block: block %}
 
 {% schema %}
@@ -124,6 +122,12 @@
       "info": "t:info.edit_presets_in_theme_settings"
     },
     {
+      "type": "color",
+      "id": "custom_text_color",
+      "label": "Custom Text Color",
+      "default": "#FFFFFF"
+    },
+    {
       "type": "header",
       "content": "Custom Font Settings"
     },
@@ -232,7 +236,7 @@
           "value": "3.5rem",
           "label": "56px"
         },
-        { 
+        {
           "value": "3.625rem",
           "label": "58px"
         },
