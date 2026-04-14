@@ -442,10 +442,107 @@
         "text_transform": "uppercase",
         "letter_spacing": 0
       }
+    },
+    "testimonials_slider_etBMFy": {
+      "type": "testimonials-slider",
+      "blocks": {
+        "testimonial_yCQcMA": {
+          "type": "testimonial",
+          "settings": {
+            "photo": "shopify://shop_images/Image.png",
+            "quote": "<p>This book, while appearing basic, is a beautiful and comprehensive guide for beginners. It methodically relieves anxiety by detailing necessary knowledge in a clear sequence, complete with concise 'at a glance' sheets for each step.</p>",
+            "author": "Christie Chambers",
+            "show_verified": true,
+            "verified_label": "Verified Purchase"
+          }
+        },
+        "testimonial_WFgXc7": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "<p>Absolutely love this — the step-by-step approach made everything so approachable. I feel confident for the first time in years.</p>",
+            "author": "Sarah Mitchell",
+            "show_verified": true,
+            "verified_label": "Verified Purchase"
+          }
+        },
+        "testimonial_RqzHiW": {
+          "type": "testimonial",
+          "settings": {
+            "quote": "<p>Worth every penny. The quality of content and presentation is unmatched. Highly recommend to anyone just starting out.</p>",
+            "author": "Emma Johnson",
+            "show_verified": false,
+            "verified_label": "Verified Purchase"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_yCQcMA",
+        "testimonial_WFgXc7",
+        "testimonial_RqzHiW"
+      ],
+      "name": "Testimonials Slider",
+      "settings": {
+        "bg_color": "#edece7",
+        "section_max_width": 1440,
+        "section_horizontal_padding": 36,
+        "section_padding_top": 60,
+        "section_padding_bottom": 60,
+        "min_height": 400,
+        "content_gap": 36,
+        "mobile_breakpoint": 768,
+        "image_col_width": 360,
+        "image_width": 380,
+        "image_height": 420,
+        "image_width_mobile": 200,
+        "image_height_mobile": 200,
+        "image_border_radius": 0,
+        "overline": "Testimonials",
+        "overline_color": "#934487",
+        "overline_font_size": 18,
+        "overline_font_weight": 400,
+        "overline_letter_spacing": 0,
+        "overline_margin_bottom": 12,
+        "overline_font": "poppins_n4",
+        "star_color": "#f29764",
+        "star_size": 22,
+        "star_gap": 0,
+        "review_count": "(300 Reviews)",
+        "review_count_font": "manrope_n3",
+        "review_count_color": "#56565c",
+        "review_count_font_size": 18,
+        "stars_margin_bottom": 0,
+        "stars_margin_top": 0,
+        "body_font": "poppins_n4",
+        "quote_color": "#1a1a1a",
+        "quote_font_size": 18,
+        "quote_font_weight": 400,
+        "quote_line_height": 17,
+        "quote_margin_bottom": 20,
+        "author_color": "#1a1a1a",
+        "author_font_size": 20,
+        "author_font_weight": 600,
+        "author_margin_bottom": 8,
+        "verified_color": "#555555",
+        "verified_icon_color": "#27ae60",
+        "verified_font_size": 14,
+        "verified_icon_size": 18,
+        "dot_active_color": "#2d2d2d",
+        "dot_inactive_color": "#d5cec4",
+        "dot_size": 8,
+        "dot_gap": 8,
+        "dots_margin_top": -2,
+        "dots_margin_left": 6,
+        "dots_alignment": "center",
+        "transition_speed": 400,
+        "transition_easing": "ease-in-out",
+        "autoplay": false,
+        "autoplay_speed": 5000
+      }
     }
   },
   "order": [
     "hero_jVaWmY",
-    "marquee_bar_rFK87t"
+    "marquee_bar_rFK87t",
+    "testimonials_slider_etBMFy"
   ]
 }

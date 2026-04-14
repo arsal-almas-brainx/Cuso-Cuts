@@ -1,194 +1,265 @@
 {% comment %} sections/testimonials-slider.liquid {% endcomment %}
+{%- style -%}
+  {{ section.settings.overline_font | font_face: font_display: 'swap' }}
+  {{ section.settings.body_font | font_face: font_display: 'swap' }}
+  {{ section.settings.review_count_font | font_face: font_display: 'swap'}}
+  {{ section.settings.quote_font | font_face: font_display: 'swap' }}
 
+  {{ section.settings.overline_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ section.settings.body_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+  {{ section.settings.quote_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+{%- endstyle -%}
 <style>
-  .tslider-section-{{ section.id }} {
-    background-color: {{ section.settings.bg_color }};
-    padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px;
-    overflow: hidden;
-    position: relative;
+    .tslider-section-{{ section.id }} {
+      background-color: {{ section.settings.bg_color }};
+      padding: {{ section.settings.section_padding_top }}px 0 {{ section.settings.section_padding_bottom }}px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tslider-wrap-{{ section.id }} {
+      max-width: {{ section.settings.section_max_width }}px;
+      margin: 0 auto;
+      padding-left: {{ section.settings.section_horizontal_left_padding }}%;
+      padding-right: {{ section.settings.section_horizontal_right_padding }}%;
+    }
+
+    .tslider-inner-{{ section.id }} {
+      display: flex;
+      align-items: center;
+      gap: {{ section.settings.content_gap }}px;
+      min-height: {{ section.settings.min_height }}px;
+    }
+
+    /* Image column */
+    .tslider-image-col-{{ section.id }} {
+      flex: 0 0 {{ section.settings.image_col_width }}px;
+      width: {{ section.settings.image_col_width }}px;
+    }
+
+    .tslider-img-wrap-{{ section.id }} {
+      width: {{ section.settings.image_width }}px;
+      height: {{ section.settings.image_height }}px;
+      border-radius: 0%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tslider-img-wrap-{{ section.id }} img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .tslider-img-placeholder-{{ section.id }} {
+      width: 100%;
+      height: 100%;
+      background: #f0ede8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    /* Content column */
+    .tslider-content-col-{{ section.id }} {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Overline */
+    .tslider-overline-{{ section.id }} {
+      font-family: {{ section.settings.overline_font.family }}, {{ section.settings.overline_font.fallback_families }};
+      font-weight: {{ section.settings.overline_font_weight }};
+      font-style: {{ section.settings.overline_font.style }};
+      font-size: {{ section.settings.overline_font_size }}px;
+      color: {{ section.settings.overline_color }};
+      letter-spacing: {{ section.settings.overline_letter_spacing }}px;
+      text-transform: uppercase;
+      margin: 0 0 {{ section.settings.overline_margin_bottom }}px;
+    }
+
+    /* Stars row */
+    .tslider-stars-row-{{ section.id }} {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: {{ section.settings.stars_margin_bottom }}%;
+      margin-top: {{ section.settings.stars_margin_top }}%;
+    }
+
+    .tslider-stars-{{ section.id }} {
+      display: flex;
+      gap: {{ section.settings.star_gap }}px;
+    }
+
+    .tslider-stars-{{ section.id }} svg {
+      width: {{ section.settings.star_size }}px;
+      height: {{ section.settings.star_size }}px;
+    }
+
+    .tslider-review-count-{{ section.id }} {
+      font-size: {{ section.settings.review_count_font_size }}px;
+      color: {{ section.settings.review_count_color }};
+      font-family: {{ section.settings.review_count_font.family }}, {{ section.settings.body_font.fallback_families }};
+      font-style: {{ section.settings.review_count_font.style }};
+    }
+
+    /* Slides wrapper */
+    .tslider-slides-outer-{{ section.id }} {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .tslider-slides-{{ section.id }} {
+      display: flex;
+      transition: transform {{ section.settings.transition_speed }}ms {{ section.settings.transition_easing }};
+    }
+
+    .tslider-slide-{{ section.id }} {
+      flex: 0 0 100%;
+      width: 100%;
+    }
+
+    /* Quote */
+    .tslider-quote-{{ section.id }} {
+    display: flex;
+    flex-direction: column;
   }
+    .tslider-quote-{{ section.id }} p {
+      font-family: {{ section.settings.quote_font.family }}, {{ section.settings.quote_font.fallback_families }};
+      font-style: {{ section.settings.quote_font.style }};
+      font-size: {{ section.settings.quote_font_size }}px;
+      font-weight: {{ section.settings.quote_font_weight }};
+      line-height: {{ section.settings.quote_line_height }}px;
+      color: {{ section.settings.quote_color }};
+      margin: 0 0 {{ section.settings.quote_margin_bottom }}px;
+
+      max-width: {{ section.settings.global_content_width }}%;
+      margin-top: {{ section.settings.global_margin_top }}%;
+      margin-bottom: {{ section.settings.global_margin_bottom }}%;
+
+    {% if section.settings.global_content_width < 100 %}
+      margin-right: auto;
+    {% endif %}
+    }
+
+    /* Author */
+    .tslider-author-{{ section.id }} {
+      font-family: {{ section.settings.body_font.family }}, {{ section.settings.body_font.fallback_families }};
+      font-style: {{ section.settings.body_font.style }};
+      font-size: {{ section.settings.author_font_size }}px;
+      font-weight: {{ section.settings.author_font_weight }};
+      color: {{ section.settings.author_color }};
+      margin-bottom: {{ section.settings.author_margin_bottom }}px;
+      margin-top: -1%;
+    }
+
+    /* Verified badge */
+    .tslider-verified-{{ section.id }} {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: {{ section.settings.verified_font_size }}px;
+      color: {{ section.settings.verified_color }};
+      font-family: {{ section.settings.body_font.family }}, {{ section.settings.body_font.fallback_families }};
+      font-style: {{ section.settings.body_font.style }};
+    }
+
+    .tslider-verified-{{ section.id }} svg {
+      width: {{ section.settings.verified_icon_size }}px;
+      height: {{ section.settings.verified_icon_size }}px;
+      flex-shrink: 0;
+    }
+
+    /* Pagination dots */
+    .tslider-pagination-{{ section.id }} {
+      display: flex;
+      align-items: center;
+      gap: {{ section.settings.dot_gap }}px;
+      margin-top: {{ section.settings.dots_margin_top }}%;
+      margin-left: {{ section.settings.dots_margin_left }}%;
+      justify-content: {{ section.settings.dots_alignment }};
+      position: relative;
+      z-index: 10;
+    }
+
+    .tslider-dot-{{ section.id }} {
+      width: {{ section.settings.dot_size }}px;
+      height: {{ section.settings.dot_size }}px;
+      border-radius: 50%;
+      background: {{ section.settings.dot_inactive_color }};
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.25s;
+    }
+
+    .tslider-dot-{{ section.id }}.active {
+      background: {{ section.settings.dot_active_color }};
+      transform: scale(1.25);
+    }
+
+    /* Responsive */
+    @media (max-width: {{ section.settings.mobile_breakpoint }}px) {
+      .tslider-inner-{{ section.id }} {
+        flex-direction: column;
+        gap: 24px;
+      }
+      .tslider-image-col-{{ section.id }} {
+        flex: none;
+        width: auto;
+        margin-left: -40%;
+        transform: scaleX(-1);
+      }
+      .tslider-img-wrap-{{ section.id }} {
+        width: {{ section.settings.image_width_mobile }}px;
+        height: {{ section.settings.image_height_mobile }}px;
+      }
+      .tslider-fixed-bg-{{ section.id }} {
+        display: none;
+      }
+      .tslider-content-col-{{ section.id }} {
+        margin-left: 12%;
+      }
+    }
+    .tslider-fixed-bg-{{ section.id }} {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 370px; 
+        height: 470px; 
+        z-index: 0; 
+        pointer-events: none; 
+        overflow: hidden;
+    }
+
+  .tslider-fixed-bg-{{ section.id }} img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
 
   .tslider-wrap-{{ section.id }} {
-    max-width: {{ section.settings.section_max_width }}px;
-    margin: 0 auto;
-    padding: 0 {{ section.settings.section_horizontal_padding }}px;
-  }
-
-  .tslider-inner-{{ section.id }} {
-    display: flex;
-    align-items: center;
-    gap: {{ section.settings.content_gap }}px;
-    min-height: {{ section.settings.min_height }}px;
-  }
-
-  /* Image column */
-  .tslider-image-col-{{ section.id }} {
-    flex: 0 0 {{ section.settings.image_col_width }}px;
-    width: {{ section.settings.image_col_width }}px;
-  }
-
-  .tslider-img-wrap-{{ section.id }} {
-    width: {{ section.settings.image_width }}px;
-    height: {{ section.settings.image_height }}px;
-    border-radius: 0%;
-    overflow: hidden;
     position: relative;
-  }
-
-  .tslider-img-wrap-{{ section.id }} img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    display: block;
-  }
-
-  .tslider-img-placeholder-{{ section.id }} {
-    width: 100%;
-    height: 100%;
-    background: #f0ede8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #aaa;
-    font-size: 14px;
-  }
-
-  /* Content column */
-  .tslider-content-col-{{ section.id }} {
-    flex: 1;
-    min-width: 0;
-  }
-
-  /* Overline */
-  .tslider-overline-{{ section.id }} {
-    font-size: {{ section.settings.overline_font_size }}px;
-    font-weight: {{ section.settings.overline_font_weight }};
-    color: {{ section.settings.overline_color }};
-    letter-spacing: {{ section.settings.overline_letter_spacing }}em;
-    text-transform: uppercase;
-    margin: 0 0 {{ section.settings.overline_margin_bottom }}px;
-    font-family: {{ section.settings.overline_font_family }}, sans-serif;
-  }
-
-  /* Stars row */
-  .tslider-stars-row-{{ section.id }} {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: {{ section.settings.stars_margin_bottom }}px;
-  }
-
-  .tslider-stars-{{ section.id }} {
-    display: flex;
-    gap: {{ section.settings.star_gap }}px;
-  }
-
-  .tslider-stars-{{ section.id }} svg {
-    width: {{ section.settings.star_size }}px;
-    height: {{ section.settings.star_size }}px;
-  }
-
-  .tslider-review-count-{{ section.id }} {
-    font-size: {{ section.settings.review_count_font_size }}px;
-    color: {{ section.settings.review_count_color }};
-    font-family: {{ section.settings.body_font_family }}, serif;
-  }
-
-  /* Slides wrapper */
-  .tslider-slides-outer-{{ section.id }} {
-    overflow: hidden;
-    position: relative;
-  }
-
-  .tslider-slides-{{ section.id }} {
-    display: flex;
-    transition: transform {{ section.settings.transition_speed }}ms {{ section.settings.transition_easing }};
-  }
-
-  .tslider-slide-{{ section.id }} {
-    flex: 0 0 100%;
-    width: 100%;
-  }
-
-  /* Quote */
-  .tslider-quote-{{ section.id }} {
-    font-size: {{ section.settings.quote_font_size }}px;
-    font-weight: {{ section.settings.quote_font_weight }};
-    line-height: {{ section.settings.quote_line_height }};
-    color: {{ section.settings.quote_color }};
-    font-family: {{ section.settings.body_font_family }}, serif;
-    margin: 0 0 {{ section.settings.quote_margin_bottom }}px;
-  }
-
-  /* Author */
-  .tslider-author-{{ section.id }} {
-    font-size: {{ section.settings.author_font_size }}px;
-    font-weight: {{ section.settings.author_font_weight }};
-    color: {{ section.settings.author_color }};
-    font-family: {{ section.settings.body_font_family }}, serif;
-    margin-bottom: {{ section.settings.author_margin_bottom }}px;
-  }
-
-  /* Verified badge */
-  .tslider-verified-{{ section.id }} {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: {{ section.settings.verified_font_size }}px;
-    color: {{ section.settings.verified_color }};
-    font-family: {{ section.settings.body_font_family }}, serif;
-  }
-
-  .tslider-verified-{{ section.id }} svg {
-    width: {{ section.settings.verified_icon_size }}px;
-    height: {{ section.settings.verified_icon_size }}px;
-    flex-shrink: 0;
-  }
-
-  /* Pagination dots */
-  .tslider-pagination-{{ section.id }} {
-    display: flex;
-    align-items: center;
-    gap: {{ section.settings.dot_gap }}px;
-    margin-top: {{ section.settings.dots_margin_top }}px;
-    justify-content: {{ section.settings.dots_alignment }};
-  }
-
-  .tslider-dot-{{ section.id }} {
-    width: {{ section.settings.dot_size }}px;
-    height: {{ section.settings.dot_size }}px;
-    border-radius: 50%;
-    background: {{ section.settings.dot_inactive_color }};
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    transition: background 0.25s, transform 0.25s;
-  }
-
-  .tslider-dot-{{ section.id }}.active {
-    background: {{ section.settings.dot_active_color }};
-    transform: scale(1.25);
-  }
-
-  /* Responsive */
-  @media (max-width: {{ section.settings.mobile_breakpoint }}px) {
-    .tslider-inner-{{ section.id }} {
-      flex-direction: column;
-      gap: 24px;
-    }
-    .tslider-image-col-{{ section.id }} {
-      flex: none;
-      width: auto;
-    }
-    .tslider-img-wrap-{{ section.id }} {
-      width: {{ section.settings.image_width_mobile }}px;
-      height: {{ section.settings.image_height_mobile }}px;
-    }
+    z-index: 2;
   }
 </style>
 
 <section class="tslider-section-{{ section.id }}">
+  {%- if section.settings.fixed_bg_image != blank -%}
+    <div class="tslider-fixed-bg-{{ section.id }}">
+      {{
+        section.settings.fixed_bg_image
+        | image_url: width: 370
+        | image_tag: loading: 'lazy', width: 370, height: 470, alt: '', widths: '370'
+      }}
+    </div>
+  {%- endif -%}
   <div class="tslider-wrap-{{ section.id }}">
     <div class="tslider-inner-{{ section.id }}">
       {%- comment -%} IMAGE COLUMN — shows image from active slide or fallback {%- endcomment -%}
@@ -239,7 +310,7 @@
               {%- if block.type == 'testimonial' -%}
                 <div class="tslider-slide-{{ section.id }}" {{ block.shopify_attributes }}>
                   {%- if block.settings.quote != blank -%}
-                    <p class="tslider-quote-{{ section.id }}">{{ block.settings.quote }}</p>
+                    <div class="tslider-quote-{{ section.id }}">{{ block.settings.quote }}</div>
                   {%- endif -%}
                   {%- if block.settings.author != blank -%}
                     <p class="tslider-author-{{ section.id }}">{{ block.settings.author }}</p>
@@ -378,6 +449,11 @@
       "default": "#ffffff"
     },
     {
+      "type": "image_picker",
+      "id": "fixed_bg_image",
+      "label": "Background Decorative Image"
+    },
+    {
       "type": "range",
       "id": "section_max_width",
       "label": "Max width (px)",
@@ -388,12 +464,21 @@
     },
     {
       "type": "range",
-      "id": "section_horizontal_padding",
-      "label": "Horizontal padding (px)",
+      "id": "section_horizontal_left_padding",
+      "label": "left padding (%)",
       "min": 0,
-      "max": 120,
-      "step": 4,
-      "default": 40
+      "max": 100,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_horizontal_right_padding",
+      "label": "right padding (%)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 0
     },
     {
       "type": "range",
@@ -525,26 +610,23 @@
       "default": 12
     },
     {
-      "type": "select",
+      "type": "range",
       "id": "overline_font_weight",
-      "label": "Overline font weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semi-bold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "600"
+      "label": "Overline Font Weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "default": 600
     },
     {
       "type": "range",
       "id": "overline_letter_spacing",
-      "label": "Letter spacing (×0.01em)",
+      "label": "Letter spacing (px)",
       "min": 0,
       "max": 30,
       "step": 1,
       "default": 10,
-      "info": "10 = 0.10em"
+      "info": "px"
     },
     {
       "type": "range",
@@ -556,11 +638,10 @@
       "default": 12
     },
     {
-      "type": "text",
-      "id": "overline_font_family",
-      "label": "Overline font family",
-      "default": "inherit",
-      "info": "e.g. Georgia, 'Times New Roman', inherit"
+      "type": "font_picker",
+      "id": "overline_font",
+      "label": "Overline Font",
+      "default": "assistant_n4"
     },
     {
       "type": "header",
@@ -597,6 +678,12 @@
       "default": "(300 Reviews)"
     },
     {
+      "type": "font_picker",
+      "id": "review_count_font",
+      "label": "Review Count Font",
+      "default": "assistant_n4"
+    },
+    {
       "type": "color",
       "id": "review_count_color",
       "label": "Review count color",
@@ -614,22 +701,63 @@
     {
       "type": "range",
       "id": "stars_margin_bottom",
-      "label": "Stars bottom margin (px)",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16
+      "label": "Stars bottom margin (%)",
+      "min": -50,
+      "max": 50,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "stars_margin_top",
+      "label": "Stars top margin (%)",
+      "min": -50,
+      "max": 50,
+      "step": 1,
+      "default": 0
     },
     {
       "type": "header",
       "content": "Quote Text"
     },
     {
-      "type": "text",
-      "id": "body_font_family",
-      "label": "Body font family",
-      "default": "inherit",
-      "info": "Applies to quote, author, verified. e.g. Georgia, inherit"
+      "type": "font_picker",
+      "id": "quote_font",
+      "label": "Quote Font Family",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "range",
+      "id": "global_content_width",
+      "label": "Quote Max Width (%)",
+      "min": 50,
+      "max": 100,
+      "step": 1,
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "global_margin_top",
+      "label": "Quote Margin Top (%)",
+      "min": -10,
+      "max": 20,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "global_margin_bottom",
+      "label": "Quote Margin Bottom (%)",
+      "min": -10,
+      "max": 20,
+      "step": 1,
+      "default": 0
+    },
+    {
+      "type": "font_picker",
+      "id": "body_font",
+      "label": "Body Font (Quote & Author)",
+      "default": "assistant_n4"
     },
     {
       "type": "color",
@@ -647,26 +775,23 @@
       "default": 18
     },
     {
-      "type": "select",
+      "type": "range",
       "id": "quote_font_weight",
-      "label": "Quote font weight",
-      "options": [
-        { "value": "300", "label": "Light" },
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semi-bold" }
-      ],
-      "default": "400"
+      "label": "Quote Font Weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "default": 400
     },
     {
       "type": "range",
       "id": "quote_line_height",
-      "label": "Quote line height (×0.1)",
-      "min": 10,
-      "max": 25,
-      "step": 1,
-      "default": 17,
-      "info": "17 = 1.7 line height"
+      "label": "Quote line height (px)",
+      "min": 0,
+      "max": 50,
+      "step": 0.5,
+      "default": 0,
+      "info": "px"
     },
     {
       "type": "range",
@@ -697,16 +822,13 @@
       "default": 16
     },
     {
-      "type": "select",
+      "type": "range",
       "id": "author_font_weight",
-      "label": "Author font weight",
-      "options": [
-        { "value": "400", "label": "Regular" },
-        { "value": "500", "label": "Medium" },
-        { "value": "600", "label": "Semi-bold" },
-        { "value": "700", "label": "Bold" }
-      ],
-      "default": "700"
+      "label": "Author Font Weight",
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "default": 700
     },
     {
       "type": "range",
@@ -788,11 +910,20 @@
     {
       "type": "range",
       "id": "dots_margin_top",
-      "label": "Dots top margin (px)",
-      "min": 8,
+      "label": "Dots top margin (%)",
+      "min": -50,
       "max": 60,
       "step": 2,
       "default": 24
+    },
+    {
+      "type": "range",
+      "id": "dots_margin_left",
+      "label": "Dots left margin (%)",
+      "min": -50,
+      "max": 60,
+      "step": 2,
+      "default": 0
     },
     {
       "type": "select",
