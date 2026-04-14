@@ -539,7 +539,7 @@
         "dot_size": 10,
         "dot_gap": 8,
         "dots_margin_top": -2,
-        "dots_margin_left": 6,
+        "dots_margin_left": 24,
         "dots_alignment": "center",
         "transition_speed": 400,
         "transition_easing": "ease-in-out",

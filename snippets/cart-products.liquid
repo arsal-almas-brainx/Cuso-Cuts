@@ -122,6 +122,9 @@
           </thead>
 
           <tbody role="rowgroup">
+            {%- assign gift_variant_id = 48598644359424 -%}
+            {%- comment -%} VARIANT ID {%- endcomment -%}
+
             {% for item in cart.items %}
               <tr
                 role="row"
@@ -178,6 +181,14 @@
                         {{- item.product.title -}}
                       </a>
                     </p>
+
+                    {%- comment -%} ADDED: GWP Label {%- endcomment -%}
+                    {% if item.variant_id == gift_variant_id %}
+                      <p class="cart-items__variant" style="color: var(--color-success); font-weight: bold;">
+                        ✨ FREE SAMPLE
+                      </p>
+                    {% endif %}
+
                     {% if item.product.vendor and block_settings.vendor %}
                       <p>
                         {{ item.product.vendor }}
@@ -299,25 +310,35 @@
                   role="cell"
                   headers="quantity"
                 >
-                  {% # Here I want to pass some arguments to the quantity block so it knows which value should the input be set to. Though quantity block could be a snippet instead %}
                   {% assign can_update_quantity = item.instructions.can_update_quantity
                     | default: true, allow_false: true
                   %}
                   <div class="cart-items__quantity-controls">
-                    {% render 'volume-pricing-info',
-                      variant: item.variant,
-                      unique_id: item.index,
-                      quantity: item.quantity
-                    %}
+                    {%- comment -%} MODIFIED: Hide controls for the gift {%- endcomment -%}
+                    {% if item.variant_id == gift_variant_id %}
+                      <div
+                        class="cart-primary-typography"
+                        style="display: flex; align-items: center; height: var(--button-size-md);"
+                      >
+                        <span>Qty: 1</span>
+                        <input type="hidden" name="updates[]" value="1">
+                      </div>
+                    {% else %}
+                      {% render 'volume-pricing-info',
+                        variant: item.variant,
+                        unique_id: item.index,
+                        quantity: item.quantity
+                      %}
 
-                    {% render 'quantity-selector',
-                      product: item.product,
-                      variant: item.variant,
-                      in_cart_quantity: item.quantity,
-                      line_index: item.index,
-                      class: 'cart-primary-typography',
-                      can_update_quantity: can_update_quantity
-                    %}
+                      {% render 'quantity-selector',
+                        product: item.product,
+                        variant: item.variant,
+                        in_cart_quantity: item.quantity,
+                        line_index: item.index,
+                        class: 'cart-primary-typography',
+                        can_update_quantity: can_update_quantity
+                      %}
+                    {% endif %}
 
                     <button
                       class="button cart-items__remove"
@@ -325,7 +346,8 @@
                       aria-label="{{ 'accessibility.remove_item' | t: title: item.title | escape }}"
                       on:click="/onLineItemRemove/{{ item.index | plus: 1 }}"
                       {% assign can_remove = item.instructions.can_remove | default: true, allow_false: true %}
-                      {% if can_remove == false %}
+                      {%- comment -%} MODIFIED: Gift cannot be removed manually {%- endcomment -%}
+                      {% if can_remove == false or item.variant_id == gift_variant_id %}
                         hidden
                       {% endif %}
                     >
@@ -559,7 +581,6 @@
     display: block;
   }
 
-
   .cart-items__variant {
     display: inline;
   }
@@ -622,7 +643,6 @@
     font-size: var(--font-size--sm);
     line-height: var(--line-height);
   }
-
 
   .cart-items__price-unit {
     font-size: var(--font-size--xs);
