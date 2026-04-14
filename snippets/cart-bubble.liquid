@@ -60,8 +60,11 @@
   .cart-bubble__background {
     position: absolute;
     inset: 0;
-    background-color: var(--color-primary-button-background);
+    background-color: #B92509;
     border-radius: var(--style-border-radius-lg);
+    transform: translate(10px, 10px);
+    height: 80%;
+    width: 80%;
   }
 
   .cart-bubble__text {
@@ -71,5 +74,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transform: translate(7px, 7px);
+    color: white;
+    font-weight: 600 !important;
   }
 {% endstylesheet %}
