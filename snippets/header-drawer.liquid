@@ -60,7 +60,11 @@
       on:click="/toggle"
     >
       <span class="svg-wrapper header-drawer-icon header-drawer-icon--open">
-        {{- 'icon-menu.svg' | inline_asset_content -}}
+        <svg width="23" height="20" viewBox="0 0 23 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.75 0.75L22.1786 0.750002" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M0.75 8.25L22.1786 8.25" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M0.75 15.75L22.1786 15.75" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
       </span>
       <span class="svg-wrapper header-drawer-icon header-drawer-icon--close">
         {{- 'icon-close.svg' | inline_asset_content -}}
@@ -779,7 +783,7 @@
 
   .header__icon--summary .header-drawer-icon {
     margin: auto;
-    width: var(--icon-size-xs);
+    width: 20px;
     height: var(--icon-size-xs);
   }
 

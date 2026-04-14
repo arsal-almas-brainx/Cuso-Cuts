@@ -130,7 +130,9 @@
                 {{- link.title -}}
                 {% if link.links != blank %}
                 <span class="menu-list__arrow">
-                     ▼
+                     <svg width="12" height="8" viewBox="0 0 13 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0.875 0.875L6.125 6.125L11.375 0.875" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
                 </span>
                 {% endif %}
              </span>
@@ -288,7 +290,7 @@
     justify-content: center;
     transition: backdrop-filter 0.2s ease, background-color 0.2s ease, border-radius 0.2s ease;
     overflow: hidden;
-    transform: translateZ(0); 
+    transform: translateZ(0);
     backface-visibility: hidden;
   }
 
@@ -742,9 +744,100 @@
   .menu-list--pill .menu-list__submenu {
     border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   }
-  .header-menu__inner{
+  .header-menu__inner {
     display: flex;
   }
+.menu-list__link-title {
+  display: flex !important;
+  align-items: center;
+  gap: 6px; 
+  padding-inline: calc(var(--gap-xl) / 2);
+}
+
+.menu-list__link {
+  flex-direction: row !important; 
+  align-items: center;
+}
+
+.menu-list__list-item:hover > .menu-list__submenu {
+  visibility: visible !important;
+  opacity: 1 !important;
+  clip-path: none !important; 
+  display: block !important;
+}
+
+.menu-list__list-item:hover .menu-list__submenu-inner {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+.menu-list__list-item:hover .menu-list__arrow {
+  transform: rotate(180deg);
+}
+
+.menu-list__arrow svg {
+  display: block;
+}
+.menu-list__list-item:hover > .menu-list__submenu,
+.header-menu:has(.menu-list__list-item:hover) {
+  clip-path: none !important;
+  overflow: visible !important;
+}
+
+/* 1. Reset the Submenu Container */
+.menu-list__submenu {
+  display: block !important; /* Overrides 'contents' which was breaking the layout */
+  position: absolute !important;
+  top: 100% !important;
+  left: 0;
+  width: 100vw;
+  z-index: 999;
+  
+  /* Hide by default */
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none;
+  
+  /* Bypass theme clipping */
+  clip-path: none !important; 
+  transition: opacity 0.3s ease;
+}
+
+/* 2. Show on Hover */
+.menu-list__list-item:hover > .menu-list__submenu {
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+
+/* 3. Ensure the inner content is visible */
+.menu-list__submenu-inner {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important; /* Force it to stay in position */
+  background: var(--color-submenu, #fff); /* Ensure it has a background */
+}
+
+/* 4. Fix Header Clipping */
+/* This stops the parent container from cutting off the dropdown */
+.header-menu, 
+.menu-list, 
+.header-menu__inner {
+  overflow: visible !important;
+  clip-path: none !important;
+}
+
+/* 5. SVG Arrow Animation */
+.menu-list__list-item:hover .menu-list__arrow {
+  transform: rotate(180deg);
+}
+
+/* 6. Alignment Fix for the Link */
+.menu-list__link-title {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+}
 {% endstylesheet %}
 
 {% schema %}
