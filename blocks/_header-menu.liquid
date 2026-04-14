@@ -10,7 +10,7 @@
   assign custom_menu_styles = 'background-color: transparent;'
 
   if block_settings.use_pill_style
-    assign custom_menu_styles = custom_menu_styles | append: 'border-radius: ' | append: block_settings.pill_border_radius | append: 'px; border: 1px solid rgba(255,255,255,0.1);'
+    assign custom_menu_styles = custom_menu_styles | append: 'border-radius: ' | append: block_settings.pill_border_radius | append: 'px; border: 0px solid rgba(255,255,255,0.1);'
     assign custom_menu_styles = custom_menu_styles | append: 'padding: 0 20px; height: 52px; margin: auto;'
   endif
 
