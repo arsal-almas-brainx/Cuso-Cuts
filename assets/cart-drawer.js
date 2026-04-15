@@ -12,6 +12,8 @@ import { isMobileBreakpoint } from '@theme/utilities';
  * @extends {DialogComponent}
  */
 class CartDrawerComponent extends DialogComponent {
+  /** @type {any} state - Local state for the component */
+  state; 
   /** @type {number} */
   #summaryThreshold = 0.5;
 
@@ -20,6 +22,12 @@ class CartDrawerComponent extends DialogComponent {
 
   /** @type {EventListenerOrEventListenerObject} */
   #boundCheckGWP;
+
+  /** @type {boolean} */
+  #isUpdatingGift = false;
+
+  /** @type {number | null} */
+  #checkGWPTimeout = null;
 
   /** * GWP Configuration
    * threshold: 10000 (100.00 PKR)
@@ -31,14 +39,15 @@ class CartDrawerComponent extends DialogComponent {
 
   constructor() {
     super();
-    this.#boundCheckGWP = this.checkGWP.bind(this);
+    this.#boundCheckGWP = this.#debouncedCheckGWP.bind(this);
   }
 
   connectedCallback() {
     super.connectedCallback();
     document.addEventListener(CartAddEvent.eventName, this.#handleCartAdd);
     
-    ['cart:updated', 'cart:refresh', 'cart:changed'].forEach(eventName => {
+    // Listen only to these events to avoid infinite loops
+    ['cart:updated', 'cart:changed'].forEach(eventName => {
       document.addEventListener(eventName, this.#boundCheckGWP);
     });
 
@@ -51,14 +60,15 @@ class CartDrawerComponent extends DialogComponent {
       history.replaceState(null, '');
     }
     
-    this.checkGWP();
+    // Initial check without refresh
+    this.#debouncedCheckGWP();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     document.removeEventListener(CartAddEvent.eventName, this.#handleCartAdd);
     
-    ['cart:updated', 'cart:refresh', 'cart:changed'].forEach(eventName => {
+    ['cart:updated', 'cart:changed'].forEach(eventName => {
       document.removeEventListener(eventName, this.#boundCheckGWP);
     });
     this.removeEventListener(DialogOpenEvent.eventName, this.#boundCheckGWP);
@@ -67,9 +77,31 @@ class CartDrawerComponent extends DialogComponent {
     this.removeEventListener(DialogOpenEvent.eventName, this.#handleHistoryOpen);
     this.removeEventListener(DialogCloseEvent.eventName, this.#handleHistoryClose);
     this.#historyAbortController?.abort();
+    
+    if (this.#checkGWPTimeout) {
+      clearTimeout(this.#checkGWPTimeout);
+    }
+  }
+
+  /**
+   * Debounced version of checkGWP to prevent rapid repeated calls
+   */
+  #debouncedCheckGWP() {
+    if (this.#checkGWPTimeout) {
+      clearTimeout(this.#checkGWPTimeout);
+    }
+    
+    this.#checkGWPTimeout = setTimeout(() => {
+      this.checkGWP();
+    }, 100);
   }
 
   async checkGWP() {
+    // Prevent concurrent executions
+    if (this.#isUpdatingGift) {
+      return;
+    }
+
     try {
       // @ts-ignore
       const rootPath = window.Shopify?.routes?.root || '/';
@@ -97,6 +129,13 @@ class CartDrawerComponent extends DialogComponent {
    * @param {number} quantity 
    */
   async #updateGift(quantity) {
+    // Prevent concurrent updates
+    if (this.#isUpdatingGift) {
+      return;
+    }
+
+    this.#isUpdatingGift = true;
+
     try {
       // @ts-ignore
       const rootPath = window.Shopify?.routes?.root || '/';
@@ -117,10 +156,16 @@ class CartDrawerComponent extends DialogComponent {
         throw new Error(`Shopify API Error: ${errorMsg}`);
       }
       
-      document.dispatchEvent(new CustomEvent('cart:refresh', { bubbles: true }));
-      this.#refreshCartUI();
+      // Wait a bit to ensure Shopify has processed the update
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Refresh the UI WITHOUT page reload
+      await this.#refreshCartUI();
+      
     } catch (e) {
       console.error("GWP Update Error:", e);
+    } finally {
+      this.#isUpdatingGift = false;
     }
   }
 
@@ -128,30 +173,109 @@ class CartDrawerComponent extends DialogComponent {
     try {
       // @ts-ignore
       const rootPath = window.Shopify?.routes?.root || '/';
-      const response = await fetch(`${rootPath}cart?sections=cart-drawer,cart-icon-bubble`);
-      const json = await response.json();
       
-      if (json['cart-drawer']) {
-        const html = new DOMParser().parseFromString(json['cart-drawer'], 'text/html');
-        const newContent = html.querySelector('.cart-drawer__content');
-        const currentDrawer = this.querySelector('.cart-drawer__content');
-        if (currentDrawer && newContent) {
-          currentDrawer.innerHTML = newContent.innerHTML;
+      // Get the drawer state before closing
+      const wasOpen = this.refs.dialog?.open;
+      
+      // Fetch the header section to get updated cart HTML
+      const headerSection = document.querySelector('[id*="shopify-section-header"]');
+      let sectionId = 'header';
+      
+      if (headerSection?.id) {
+        sectionId = headerSection.id.replace('shopify-section-', '');
+      }
+      
+      // Fetch the updated section
+      const response = await fetch(`${window.location.pathname}?section_id=${sectionId}`);
+      const html = await response.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      
+      // Extract and update cart drawer inner content
+      const newCartInner = doc.querySelector('.cart-drawer__inner');
+      const currentCartInner = this.querySelector('.cart-drawer__inner');
+      
+      if (newCartInner && currentCartInner) {
+        // Store scroll position
+        const scrollElement = currentCartInner.querySelector('.cart-drawer__content');
+        const scrollPos = scrollElement?.scrollTop || 0;
+        
+        // Replace the content
+        currentCartInner.innerHTML = newCartInner.innerHTML;
+        
+        // Restore scroll position
+        const newScrollElement = currentCartInner.querySelector('.cart-drawer__content');
+        if (newScrollElement) {
+          newScrollElement.scrollTop = scrollPos;
         }
       }
       
-      if (json['cart-icon-bubble']) {
-        const currentBubble = document.querySelector('cart-icon-bubble');
-        if (currentBubble) currentBubble.innerHTML = json['cart-icon-bubble'];
+      // Update cart bubble with correct count (excluding gift)
+      await this.#updateCartBubble();
+      
+      // Reopen drawer if it was open
+      if (wasOpen && !this.refs.dialog?.open) {
+        this.showDialog();
       }
+      
     } catch (e) {
       console.error("Cart UI refresh error:", e);
+      // Fallback: just reload the page
+      window.location.reload();
+    }
+  }
+
+  async #updateCartBubble() {
+    try {
+      // @ts-ignore
+      const rootPath = window.Shopify?.routes?.root || '/';
+      const response = await fetch(`${rootPath}cart.js`);
+      const cart = await response.json();
+      
+      // Calculate actual count excluding gift
+      let actualCount = cart.item_count;
+      const giftItem = cart.items.find((/** @type {any} */ item) => 
+        item.variant_id == this.#GWP_CONFIG.giftVariantId
+      );
+      
+      if (giftItem) {
+        actualCount -= giftItem.quantity;
+      }
+      
+      // Update all cart bubble instances
+      const bubbles = document.querySelectorAll('.cart-bubble__text-count');
+      bubbles.forEach(bubble => {
+        if (actualCount === 0) {
+          bubble.textContent = '';
+        } else {
+          bubble.textContent = actualCount.toString();
+        }
+      });
+      
+      // Also update the cart drawer heading bubble
+      const drawerBubbles = this.querySelectorAll('.cart-bubble__text-count');
+      drawerBubbles.forEach(bubble => {
+        if (actualCount === 0) {
+          bubble.textContent = '';
+        } else {
+          bubble.textContent = actualCount.toString();
+        }
+      });
+      
+
+      const bubbleText = document.getElementById('cart-bubble-text');
+      if (bubbleText && actualCount > 0) {
+        bubbleText.textContent = `${actualCount}`;
+      }
+      
+    } catch (e) {
+      console.error("Cart bubble update error:", e);
     }
   }
 
   #handleHistoryOpen = () => {
     if (!isMobileBreakpoint()) return;
-    if (!history.state?.cartDrawerOpen) {
+    if (this.state?.cartDrawerOpen) {
       history.pushState({ cartDrawerOpen: true }, '');
     }
     this.#historyAbortController = new AbortController();
@@ -176,7 +300,8 @@ class CartDrawerComponent extends DialogComponent {
    */
   #handleCartAdd = (event) => {
     if (this.hasAttribute('auto-open')) this.showDialog();
-    this.checkGWP();
+    // Check GWP after cart add
+    this.#debouncedCheckGWP();
     this.#announceCartCount(event.detail.resource?.item_count);
   };
 
@@ -192,7 +317,8 @@ class CartDrawerComponent extends DialogComponent {
 
   open() {
     this.showDialog();
-    this.checkGWP();
+    // Check GWP when drawer opens
+    this.#debouncedCheckGWP();
     customElements.whenDefined('shopify-payment-terms').then(() => {
       const installmentsContent = document.querySelector('shopify-payment-terms')?.shadowRoot;
       const cta = installmentsContent?.querySelector('#shopify-installments-cta');
