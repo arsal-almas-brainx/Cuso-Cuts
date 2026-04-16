@@ -1,41 +1,162 @@
-
-
-<script
-  src="{{ 'marquee.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
+{% comment %} sections/marquee.liquid - Enhanced with custom bar mode {% endcomment %}
 
 {% assign gap_between_elements = section.settings.gap_between_elements %}
+{% assign use_custom_bar = section.settings.use_custom_bar %}
 
-<div class="section-background color-{{ section.settings.color_scheme }}"></div>
-<marquee-component
-  class="section spacing-style gap-style color-{{ section.settings.color_scheme }}"
-  style="
-    {%- render 'spacing-style', settings: section.settings %};
-    {% render 'gap-style', value: gap_between_elements, name: 'marquee-gap' %}
-    --marquee-direction: {{ section.settings.movement_direction }};
-  "
-  data-speed-factor="25"
-  data-movement-direction="{{ section.settings.movement_direction }}"
->
-  <div
-    class="marquee__wrapper"
-    ref="wrapper"
+{% if use_custom_bar %}
+  {%- liquid
+    assign gap_px = section.settings.gap_percent | times: 0.5 | round
+    assign letter_spacing_val = section.settings.letter_spacing | divided_by: 100.0
+  -%}
+
+  <style>
+    .custom-bar-wrapper-{{ section.id }} {
+      background-color: {{ section.settings.bg_color }};
+      height: 60px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    #marquee-{{ section.id }} {
+      --marquee-gap: {{ gap_px | times: 2 }}px;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      display: block !important;
+      width: 100%;
+    }
+
+    #marquee-{{ section.id }} .marquee__wrapper {
+      gap: var(--marquee-gap);
+      align-items: center;
+      display: flex;
+    }
+
+    #marquee-{{ section.id }} .marquee__content {
+      gap: var(--marquee-gap);
+      align-items: center;
+      display: flex;
+    }
+
+    #marquee-{{ section.id }} .marquee__repeated-items {
+      gap: var(--marquee-gap);
+      display: flex;
+      align-items: center;
+      flex-direction: row !important;
+    }
+
+    .marquee__item-inner-{{ section.id }} {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      gap: {{ gap_px }}%;
+    }
+
+    .marquee__item-inner-{{ section.id }} .marquee__text {
+      font-size: {{ section.settings.font_size }}px;
+      font-weight: {{ section.settings.font_weight }};
+      color: {{ section.settings.text_color }};
+      letter-spacing: {{ letter_spacing_val }}em;
+      font-style: {{ section.settings.font_style }};
+      text-transform: {{ section.settings.text_transform }};
+      line-height: 1.2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .marquee__item-inner-{{ section.id }} .marquee__icon {
+      width: 15px;
+      height: 22px;
+      object-fit: contain;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    #marquee-{{ section.id }} p, 
+    #marquee-{{ section.id }} span {
+      margin: 0 !important;
+    }
+  </style>
+
+  <script src="{{ 'marquee.js' | asset_url }}" type="module" fetchpriority="low"></script>
+
+  <div class="custom-bar-wrapper-{{ section.id }}">
+    <marquee-component
+      id="marquee-{{ section.id }}"
+      data-speed-factor="25"
+      data-movement-direction="{{ section.settings.movement_direction }}"
+      style="--marquee-direction: {{ section.settings.movement_direction }}; --marquee-speed: {{ section.settings.speed }}s;"
+    >
+      <div class="marquee__wrapper" ref="wrapper">
+        <div class="marquee__content" ref="content">
+          <div class="marquee__repeated-items" ref="marqueeItems[]">
+            {%- for block in section.blocks -%}
+              <div class="marquee__item-inner-{{ section.id }}" {{ block.shopify_attributes }}>
+                {%- if section.settings.icon_image != blank -%}
+                  <img 
+                    src="{{ section.settings.icon_image | image_url: width: 30 }}" 
+                    alt="" 
+                    class="marquee__icon" 
+                    aria-hidden="true" 
+                    width="15" 
+                    height="22"
+                  >
+                {%- endif -%}
+                <span class="marquee__text">
+                  {%- if block.type == 'text' and block.settings.text -%}
+                    {{- block.settings.text -}}
+                  {%- else -%}
+                    {%- render block.type, block: block -%}
+                  {%- endif -%}
+                </span>
+              </div>
+            {%- endfor -%}
+          </div>
+        </div>
+      </div>
+    </marquee-component>
+  </div>
+
+{% else %}
+  <script
+    src="{{ 'marquee.js' | asset_url }}"
+    type="module"
+    fetchpriority="low"
+  ></script>
+  
+  <div class="section-background color-{{ section.settings.color_scheme }}"></div>
+  <marquee-component
+    class="section spacing-style gap-style color-{{ section.settings.color_scheme }}"
+    style="
+      {%- render 'spacing-style', settings: section.settings %};
+      {% render 'gap-style', value: gap_between_elements, name: 'marquee-gap' %}
+      --marquee-direction: {{ section.settings.movement_direction }};
+    "
+    data-speed-factor="25"
+    data-movement-direction="{{ section.settings.movement_direction }}"
   >
     <div
-      class="marquee__content"
-      ref="content"
+      class="marquee__wrapper"
+      ref="wrapper"
     >
       <div
-        class="marquee__repeated-items"
-        ref="marqueeItems[]"
+        class="marquee__content"
+        ref="content"
       >
-        {% content_for 'blocks' %}
+        <div
+          class="marquee__repeated-items"
+          ref="marqueeItems[]"
+        >
+          {% content_for 'blocks' %}
+        </div>
       </div>
     </div>
-  </div>
-</marquee-component>
+  </marquee-component>
+{% endif %}
 
 {% stylesheet %}
   marquee-component {
@@ -112,6 +233,25 @@
   ],
   "settings": [
     {
+      "type": "checkbox",
+      "id": "use_custom_bar",
+      "label": "Enable custom bar mode",
+      "default": false,
+      "info": "When enabled, uses custom bar style. When disabled, uses default marquee style."
+    },
+    {
+      "type": "paragraph",
+      "content": "⚙️ Settings below are organized by mode. Default mode settings appear first, followed by custom bar mode settings."
+    },
+    {
+      "type": "header",
+      "content": "═══ DEFAULT MODE ═══"
+    },
+    {
+      "type": "paragraph",
+      "content": "These settings apply when 'Enable custom bar mode' is UNCHECKED"
+    },
+    {
       "type": "select",
       "id": "movement_direction",
       "label": "t:settings.motion_direction",
@@ -125,47 +265,166 @@
           "label": "t:options.reverse"
         }
       ],
-      "default": "normal"
+      "default": "normal",
+      "info": "Default mode only"
     },
     {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:settings.color_scheme",
-      "default": "scheme-1"
-    },
-    {
-      "type": "header",
-      "content": "t:content.padding"
+      "default": "scheme-1",
+      "info": "Default mode only"
     },
     {
       "type": "range",
       "id": "padding-block-start",
-      "label": "t:settings.top",
+      "label": "Top padding",
       "min": 0,
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 24
+      "default": 24,
+      "info": "Default mode only"
     },
     {
       "type": "range",
       "id": "padding-block-end",
-      "label": "t:settings.bottom",
+      "label": "Bottom padding",
       "min": 0,
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 24
+      "default": 24,
+      "info": "Default mode only"
     },
     {
       "type": "range",
       "id": "gap_between_elements",
-      "label": "t:settings.gap",
+      "label": "Gap between elements",
       "min": 0,
       "max": 100,
       "step": 1,
       "unit": "px",
-      "default": 24
+      "default": 24,
+      "info": "Default mode only"
+    },
+    {
+      "type": "header",
+      "content": "═══ CUSTOM BAR MODE ═══"
+    },
+    {
+      "type": "paragraph",
+      "content": "These settings apply when 'Enable custom bar mode' is CHECKED"
+    },
+    {
+      "type": "header",
+      "content": "Layout & Animation"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_image",
+      "label": "Icon image",
+      "info": "Optional icon before each text item. Displayed at 15×22px. Custom bar mode only."
+    },
+    {
+      "type": "range",
+      "id": "gap_percent",
+      "label": "Spacing (%)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 30,
+      "info": "Controls gap between icon & text, and spacing between items. Custom bar mode only."
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll speed (seconds)",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "default": 20,
+      "info": "Time for one complete scroll loop. Custom bar mode only."
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#1a1a1a",
+      "info": "Custom bar mode only"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff",
+      "info": "Custom bar mode only"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size (px)",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "default": 14,
+      "info": "Custom bar mode only"
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500",
+      "info": "Custom bar mode only"
+    },
+    {
+      "type": "select",
+      "id": "font_style",
+      "label": "Font style",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "italic", "label": "Italic" }
+      ],
+      "default": "normal",
+      "info": "Custom bar mode only"
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "Default" },
+        { "value": "uppercase", "label": "UPPERCASE" },
+        { "value": "lowercase", "label": "lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "none",
+      "info": "Custom bar mode only"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 2,
+      "info": "Value ÷ 100 = em (e.g. 2 = 0.02em). Custom bar mode only."
     }
   ],
   "presets": [
