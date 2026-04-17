@@ -1434,6 +1434,12 @@
     "name": "t:names.badges",
     "settings": [
       {
+        "type": "checkbox",
+        "id": "show_badge",
+        "label": "t:settings.show_badge",
+        "default": true
+      },
+      {
         "type": "select",
         "id": "badge_position",
         "options": [
