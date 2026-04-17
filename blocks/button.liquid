@@ -1,0 +1,253 @@
+{% render 'button', link: block.settings.link, block: block %}
+
+{% schema %}
+{
+  "name": "t:names.button",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "t:settings.label",
+      "default": "t:text_defaults.button_label"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "t:settings.link"
+    },
+    {
+      "type": "checkbox",
+      "id": "open_in_new_tab",
+      "label": "t:settings.open_new_tab",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "add_arrow",
+      "label": "Add arrow after text",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "t:content.layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full Width (Force New Line)",
+      "default": false,
+      "info": "If unchecked, buttons will sit side-by-side if space allows."
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Button Width Mode",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "t:options.fit_content"
+        },
+        {
+          "value": "custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Custom Width (px)",
+      "min": 50,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 200,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding (Inside %)"
+    },
+    { "type": "range", "id": "pad_t", "label": "Top", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 5 },
+    { "type": "range", "id": "pad_b", "label": "Bottom", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 5 },
+    { "type": "range", "id": "pad_l", "label": "Left", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 10 },
+    { "type": "range", "id": "pad_r", "label": "Right", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 10 },
+    {
+      "type": "header",
+      "content": "Margin (Outside %)"
+    },
+    { "type": "range", "id": "mar_t", "label": "Top", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 0 },
+    { "type": "range", "id": "mar_b", "label": "Bottom", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 2 },
+    { "type": "range", "id": "mar_l", "label": "Left", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 0 },
+    { "type": "range", "id": "mar_r", "label": "Right", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 2 },
+    {
+      "type": "header",
+      "content": "t:content.typography"
+    },
+    {
+      "type": "font_picker",
+      "id": "button_font",
+      "label": "Font Family",
+      "default": "inter_n4"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Desktop Font Size",
+      "min": 10,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Font Weight",
+      "options": [
+        { "value": "100", "label": "100 - Thin" },
+        { "value": "200", "label": "200 - Extra Light" },
+        { "value": "300", "label": "300 - Light" },
+        { "value": "400", "label": "400 - Normal" },
+        { "value": "500", "label": "500 - Medium" },
+        { "value": "600", "label": "600 - Semi Bold" },
+        { "value": "700", "label": "700 - Bold" },
+        { "value": "800", "label": "800 - Extra Bold" },
+        { "value": "900", "label": "900 - Black" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "t:content.appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "transparent_bg",
+      "label": "Transparent Background",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#000000",
+      "visible_if": "{{ block.settings.transparent_bg == false }}"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Border Settings"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Border Width",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    /* Add these inside the "settings" array in blocks/button.liquid */
+    {
+      "type": "header",
+      "content": "Mobile Settings (Max 767px)"
+    },
+    {
+      "type": "range",
+      "id": "m_font_size",
+      "label": "Mobile Font Size",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "m_font_weight",
+      "label": "Mobile Font Weight",
+      "options": [
+        { "value": "100", "label": "100" },
+        { "value": "400", "label": "400" },
+        { "value": "600", "label": "600" },
+        { "value": "700", "label": "700" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "m_radius",
+      "label": "Mobile Border Radius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    { "type": "header", "content": "Mobile Padding (%)" },
+    { "type": "range", "id": "m_pad_t", "label": "Top", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 5 },
+    { "type": "range", "id": "m_pad_b", "label": "Bottom", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 5 },
+    { "type": "range", "id": "m_pad_l", "label": "Left", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 10 },
+    { "type": "range", "id": "m_pad_r", "label": "Right", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 10 },
+    { "type": "header", "content": "Mobile Margin (%)" },
+    { "type": "range", "id": "m_mar_t", "label": "Top", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 0 },
+    { "type": "range", "id": "m_mar_b", "label": "Bottom", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 2 },
+    { "type": "range", "id": "m_mar_l", "label": "Left", "min": -50, "max": 50, "step": 1, "unit": "%", "default": 0 },
+    {
+      "type": "header",
+      "content": "Mobile Sizing"
+    },
+    {
+      "type": "checkbox",
+      "id": "m_custom_width_enable",
+      "label": "Use custom width on mobile",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "m_custom_width",
+      "label": "Mobile Custom Width (px)",
+      "min": 50,
+      "max": 500,
+      "step": 5,
+      "unit": "px",
+      "default": 150,
+      "visible_if": "{{ block.settings.m_custom_width_enable == true }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.button",
+      "category": "t:categories.basic",
+      "settings": {
+        "link": "shopify://collections/all"
+      }
+    }
+  ]
+}
+{% endschema %}

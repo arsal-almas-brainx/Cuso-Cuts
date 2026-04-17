@@ -1,0 +1,305 @@
+{% liquid
+  assign block_settings = block.settings
+  
+  # Use custom rating from settings
+  assign rating = block_settings.custom_rating
+  assign scale_max = 5
+  assign rating_text = block_settings.rating_text
+-%}
+
+{%- if rating != blank and rating > 0 -%}
+  {% liquid
+    assign decimal_rating = 0
+    assign decimal = rating | modulo: 1
+
+    if decimal >= 0.3 and decimal <= 0.7
+      assign decimal_rating = 0.5
+    elsif decimal > 0.7
+      assign decimal_rating = 1
+    endif
+
+    assign decimal_rounded = decimal_rating | ceil
+    assign svg_filled_stars = rating | floor | plus: decimal_rounded
+  %}
+
+  <style>
+    .rating-wrapper--{{ block.id }} {
+      --star-fill-color: {{ block_settings.star_fill_color }};
+      --star-size: {{ block_settings.star_size }}px;
+      --stars-gap: {{ block_settings.stars_gap }}px;
+      --text-star-gap: {{ block_settings.text_star_gap }}px;
+      --rating-text-font: {{ block_settings.rating_font.family }}, {{ block_settings.rating_font.fallback_families }};
+      --rating-text-weight: {{ block_settings.rating_font_weight }};
+      --rating-text-size: {{ block_settings.rating_font_size }}px;
+    }
+
+    @media screen and (max-width: 767px) {
+      .rating-wrapper--{{ block.id }} {
+        --star-size: {{ block_settings.m_star_size }}px !important;
+        --rating-text-weight: {{ block_settings.m_rating_font_weight }} !important;
+        --rating-text-size: {{ block_settings.m_rating_font_size }}px !important;
+      }
+    }
+  </style>
+
+  <div
+    class="rating-wrapper rating-wrapper--{{ block.id }} justify-{{ block_settings.alignment }}"
+    {{ block.shopify_attributes }}
+  >
+    <svg
+      class="visually-hidden"
+      style="width: 0; height: 0;"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      role="presentation"
+    >
+      <defs>
+        <linearGradient id="half-{{ block.id }}" x1="0" x2="100%" y1="0" y2="0">
+          <stop offset="50%" stop-color="{{ block_settings.star_fill_color }}"></stop>
+          <stop offset="50%" stop-color="rgba(0,0,0,0.1)"></stop>
+        </linearGradient>
+
+        <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" id="star-{{ block.id }}">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </symbol>
+      </defs>
+    </svg>
+
+    <div
+      class="rating"
+      aria-label="Rating: {{ rating }} out of {{ scale_max }}"
+    >
+      {%- for star in (1..scale_max) -%}
+        <svg
+          class="star-icon {% if star <= svg_filled_stars %}filled-star{% endif %}"
+          viewBox="0 0 24 24"
+          role="presentation"
+        >
+          <use 
+            xlink:href="#star-{{ block.id }}"
+            {% if decimal_rating == 0.5 and star == svg_filled_stars %}
+              fill="url(#half-{{ block.id }})"
+            {% elsif star <= svg_filled_stars %}
+              fill="{{ block_settings.star_fill_color }}"
+            {% else %}
+              fill="rgba(0,0,0,0.1)"
+            {% endif %}
+          ></use>
+        </svg>
+      {%- endfor -%}
+    </div>
+
+    {%- if rating_text != blank -%}
+      <p class="rating-text">
+        {{ rating_text }}
+      </p>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .rating-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--text-star-gap, 8px);
+    min-width: fit-content;
+  }
+
+  .rating-wrapper.justify-left {
+    justify-content: flex-start;
+  }
+
+  .rating-wrapper.justify-center {
+    justify-content: center;
+  }
+
+  .rating-wrapper.justify-right {
+    justify-content: flex-end;
+  }
+
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: var(--stars-gap, 4px);
+    order: 1; /* Stars first */
+  }
+
+  .rating-text {
+    margin: 0;
+    white-space: nowrap;
+    line-height: 1;
+    font-family: var(--rating-text-font);
+    font-weight: var(--rating-text-weight);
+    font-size: var(--rating-text-size);
+    order: 2; /* Text second */
+  }
+
+  .star-icon {
+    width: var(--star-size, 20px);
+    height: var(--star-size, 20px);
+    display: block;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Custom Review Stars",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Star Settings"
+    },
+    {
+      "type": "range",
+      "id": "custom_rating",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "label": "Star Rating",
+      "default": 4.5,
+      "info": "Select rating from 0 to 5 (half stars supported)"
+    },
+    {
+      "type": "color",
+      "id": "star_fill_color",
+      "label": "Star Fill Color",
+      "default": "#FF0000"
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Star Size (Width & Height)",
+      "default": 20,
+      "info": "Sets both width and height of each star"
+    },
+    {
+      "type": "range",
+      "id": "stars_gap",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap Between Stars",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Text Settings"
+    },
+    {
+      "type": "text",
+      "id": "rating_text",
+      "label": "Text After Stars",
+      "default": "4.5/5",
+      "info": "Text appears on the right side of stars"
+    },
+    {
+      "type": "font_picker",
+      "id": "rating_font",
+      "label": "Font",
+      "default": "assistant_n4"
+    },
+    {
+      "type": "select",
+      "id": "rating_font_weight",
+      "label": "Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "rating_font_size",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Font Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_star_gap",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Gap Between Stars and Text",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Mobile Settings (Max 767px)"
+    },
+    {
+      "type": "range",
+      "id": "m_star_size",
+      "min": 10,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile Star Size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "m_rating_font_size",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile Font Size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "m_rating_font_weight",
+      "label": "Mobile Font Weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width",
+      "options": [
+        { "value": "fit-content", "label": "Fit Content" },
+        { "value": "100%", "label": "Full Width" }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Alignment",
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Review Stars"
+    }
+  ]
+}
+{% endschema %}

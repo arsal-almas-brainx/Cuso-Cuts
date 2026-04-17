@@ -1,0 +1,69 @@
+{%- liquid
+  # Logic to determine alignment based on section settings or block settings
+  assign alignment = block.settings.alignment | default: 'center'
+-%}
+
+<style>
+  .button-group--{{ block.id }} {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: {{ alignment }};
+    width: 100%;
+    margin-block: 15px;
+  }
+
+  /* Ensure buttons inside this group don't fight for width */
+  .button-group--{{ block.id }} > * {
+    display: block !important;
+    margin: 0 !important;
+  }
+</style>
+
+<div class="button-group--{{ block.id }}" {{ block.shopify_attributes }}>
+  {%- for i in (1..2) -%}
+    {%- assign button_prefix = 'button_' | append: i -%}
+    {%- if block.settings[button_prefix] != blank -%}
+       {%- render 'button', 
+           label: block.settings[button_prefix], 
+           link: block.settings['link_' | append: i],
+           block: block,
+           id_suffix: i 
+       -%}
+    {%- endif -%}
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Button Group (Row)",
+  "settings": [
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Button 1"
+    },
+    { "type": "text", "id": "button_1", "label": "Button 1 Label", "default": "First Button" },
+    { "type": "url", "id": "link_1", "label": "Button 1 Link" },
+    {
+      "type": "header",
+      "content": "Button 2"
+    },
+    { "type": "text", "id": "button_2", "label": "Button 2 Label", "default": "Second Button" },
+    { "type": "url", "id": "link_2", "label": "Button 2 Link" }
+  ],
+  "presets": [
+    { "name": "Button Group (Row)" }
+  ]
+}
+{% endschema %}

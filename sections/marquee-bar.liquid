@@ -1,0 +1,217 @@
+{% comment %} sections/marquee-bar.liquid {% endcomment %}
+
+{%- liquid
+  assign gap_px = section.settings.gap_percent | times: 0.5 | round
+  # Divide letter spacing by 100 as per schema info
+  assign letter_spacing_val = section.settings.letter_spacing | divided_by: 100.0
+-%}
+
+<style>
+  #marquee-{{ section.id }} {
+    height: 60px;
+    background-color: {{ section.settings.bg_color }};
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  #marquee-{{ section.id }} .marquee__track {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    animation: marquee-scroll-{{ section.id }} {{ section.settings.speed }}s linear infinite;
+    will-change: transform;
+  }
+  #marquee-{{ section.id }} .marquee__item {
+    display: flex; /* Changed to flex to support gap */
+    align-items: center;
+    gap: {{ gap_px }}px;
+    padding: 0 {{ gap_px }}px;
+  }
+  #marquee-{{ section.id }} .marquee__text {
+    font-size: {{ section.settings.font_size }}px;
+    font-weight: {{ section.settings.font_weight }};
+    color: {{ section.settings.text_color }};
+    letter-spacing: {{ letter_spacing_val }}em;
+    font-style: {{ section.settings.font_style }};
+    text-transform: {{ section.settings.text_transform }};
+  }
+  #marquee-{{ section.id }} .marquee__icon {
+    width: 15px;
+    height: 22px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block; /* Ensures gap works consistently */
+  }
+  @keyframes marquee-scroll-{{ section.id }} {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #marquee-{{ section.id }} .marquee__track {
+      animation: none;
+    }
+  }
+</style>
+
+<div id="marquee-{{ section.id }}" class="marquee-bar" role="marquee" aria-label="Announcements">
+  <div class="marquee__track">
+    {%- for i in (1..2) -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'text_item' -%}
+          <div class="marquee__item" {{ block.shopify_attributes }}> {% comment %} Changed to div {% endcomment %}
+            {%- if section.settings.icon_image != blank -%}
+              <img
+                src="{{ section.settings.icon_image | image_url: width: 30 }}"
+                alt=""
+                class="marquee__icon"
+                aria-hidden="true"
+                width="15"
+                height="22"
+              >
+            {%- endif -%}
+            <span class="marquee__text">{{ block.settings.text }}</span>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Marquee Bar",
+  "tag": "section",
+  "class": "section-marquee-bar",
+  "max_blocks": 20,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_image",
+      "label": "Icon image",
+      "info": "Applied to all items. Displayed at 15×22px."
+    },
+    {
+      "type": "range",
+      "id": "gap_percent",
+      "label": "Gap between text and icons (%)",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 30,
+      "info": "Controls spacing between icon and text"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Scroll speed (seconds per loop)",
+      "min": 5,
+      "max": 60,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size (px)",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Regular" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi-bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "select",
+      "id": "font_style",
+      "label": "Font style",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "italic", "label": "Italic" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "text_transform",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "Default" },
+        { "value": "uppercase", "label": "UPPERCASE" },
+        { "value": "lowercase", "label": "lowercase" },
+        { "value": "capitalize", "label": "Capitalize" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "letter_spacing",
+      "label": "Letter spacing (em)",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "default": 2,
+      "info": "Value is divided by 100 internally (e.g. 2 = 0.02em)"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text_item",
+      "name": "Text item",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free shipping on orders over $50"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquee Bar",
+      "blocks": [
+        { "type": "text_item", "settings": { "text": "Free shipping on orders over $50" } },
+        { "type": "text_item", "settings": { "text": "Handcrafted with love" } },
+        { "type": "text_item", "settings": { "text": "30-day returns guaranteed" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,291 @@
+{%- doc -%}
+  Intended for use in a block similar to the text block.
+
+  @param {string} [class] - custom class to define in addition to text-block classes
+  @param {string} [fallback_text] - fallback text if settings.text does not exist
+  @param {object} [block] - The block object
+  @param {string} [width] - width of the text block
+{%- enddoc -%}
+
+{% liquid
+  assign block_settings = block.settings
+  
+  # Decide which text to show based on screen (handled via CSS classes later)
+  assign desktop_text = block_settings.text
+  assign mobile_text = block_settings.text_mobile | default: desktop_text
+  
+  assign plain_text = desktop_text | strip_newlines | strip
+  assign visible_text = plain_text | strip_html
+  
+  assign text_width = width | default: block_settings.width
+  if text_width == 'custom'
+    assign final_width = block_settings.custom_width | append: '%'
+  else
+    assign final_width = text_width
+  endif
+  
+  assign custom_font = block_settings.custom_font
+  assign custom_weight = block_settings.custom_font_weight
+
+  if block_settings.font_size contains 'heading-lg' or block_settings.font_size contains 'heading-xl'
+    assign type = 'display'
+  elsif block_settings.font_size contains 'heading'
+    assign type = 'heading'
+  else
+    assign type = 'body'
+  endif
+  if block_settings.type_preset == 'rte' or block_settings.type_preset == 'paragraph'
+    assign is_rte = true
+  endif
+
+  capture text_block_classes
+    if text_width == '100%' or text_width == 'custom'
+      echo 'text-block--align-' | append: block_settings.alignment
+      if block_settings.max_width == 'none'
+        echo ' text-block--full-width '
+      endif
+    endif
+    if block_settings.type_preset == 'custom'
+      echo ' custom-typography '
+      if block_settings.font_size != ''
+        echo ' custom-font-size '
+      endif
+      if block_settings.color != ''
+        echo ' custom-color '
+      endif
+    endif
+    if block_settings.background
+      echo ' text-block--background '
+    endif
+    if is_rte
+      echo ' rte '
+    endif
+  endcapture
+%}
+
+<style>
+  {{ custom_font | font_face: display: 'swap' }}
+  
+  /* Desktop font styling - Scoped to this specific block */
+  .text-block--{{ block.id }}, 
+  .text-block--{{ block.id }} * {
+    font-family: {{ custom_font.family }}, {{ custom_font.fallback_families }} !important;
+    font-weight: {{ custom_weight }} !important;
+    {% if block_settings.custom_text_color != blank %}
+      color: var(--custom-text-color) !important;
+    {% endif %}
+  }
+
+  /* Desktop/Mobile Text Toggle - Scoped to this block only */
+  .text-block--{{ block.id }} .text-mobile-only { 
+    display: none !important; 
+  }
+
+  .text-block--{{ block.id }} .text-desktop-only { 
+    display: block !important; 
+  }
+
+  @media screen and (max-width: 749px) {
+    .text-block--{{ block.id }} {
+      {% if block_settings['padding-block-start-mobile'] != blank %}
+        --padding-block-start: {{ block_settings['padding-block-start-mobile'] }}px !important;
+      {% endif %}
+      {% if block_settings['padding-block-end-mobile'] != blank %}
+        --padding-block-end: {{ block_settings['padding-block-end-mobile'] }}px !important;
+      {% endif %}
+    }
+    
+    .text-block--{{ block.id }},
+    .text-block--{{ block.id }} * {
+      {% if block_settings.font_size_mobile != blank and block_settings.font_size_mobile != '' %}
+        font-size: {{ block_settings.font_size_mobile }} !important;
+      {% endif %}
+      {% if block_settings.custom_font_weight_mobile != 'inherit' and block_settings.custom_font_weight_mobile != blank %}
+        font-weight: {{ block_settings.custom_font_weight_mobile }} !important;
+      {% endif %}
+    }
+
+    {% if block_settings.text_mobile != blank %}
+      .text-block--{{ block.id }} .text-desktop-only { 
+        display: none !important; 
+      }
+      .text-block--{{ block.id }} .text-mobile-only { 
+        display: block !important; 
+      }
+    {% endif %}
+  }
+</style>
+
+{% capture attributes %}
+  class="{{ class }} spacing-style text-block text-block--{{ block.id }} {{ block_settings.type_preset }}
+    {{ text_block_classes }}
+  "
+
+  style="
+    {% render 'spacing-padding', settings: block_settings %}
+    {% render 'typography-style', settings: block_settings %}
+    
+    --width: {{ final_width }};
+    --max-width: var(--max-width--{{ type }}-{{ block_settings.max_width }});
+    --custom-text-color: {{ block_settings.custom_text_color | default: 'inherit' }};
+    
+    {% if text_width == "100%" or text_width == "custom" %}
+      --text-align: {{ block_settings.alignment }};
+    {% endif %}
+    
+    {% if block_settings.background %}
+      --text-background-color: {{ block_settings.background_color | default: 'rgb(255 255 255 / 1.0)' }};
+      --text-corner-radius: {{ block_settings.corner_radius }}px;
+      --text-padding: max(var(--padding-2xs), calc((var(--text-corner-radius) + var(--padding-xs)) * (1 - cos(45deg))));
+    {% endif %}
+  "
+
+  {{ block.shopify_attributes }}
+{% endcapture %}
+
+{% liquid
+  assign element = 'div'
+  if is_rte
+    assign element = 'rte-formatter'
+  endif
+%}
+
+{% if fallback_text != blank and visible_text == blank %}
+  <div {{ attributes | strip_newlines | strip }}>
+    {{ fallback_text }}
+  </div>
+{% elsif plain_text != blank %}
+  <{{ element }} {{ attributes | strip_newlines | strip }}>
+    {% if block_settings.text_mobile != blank %}
+      <span class="text-desktop-only">{{ desktop_text }}</span>
+      <span class="text-mobile-only">{{ mobile_text }}</span>
+    {% else %}
+      {{ desktop_text }}
+    {% endif %}
+  </{{ element }}>
+{% endif %}
+
+{% stylesheet %}
+  :root {
+    --text-align-default: left;
+  }
+
+  [style*='--horizontal-alignment: center'] .text-block {
+    --text-align-default: center;
+  }
+
+  [style*='--horizontal-alignment: flex-end'] .text-block {
+    --text-align-default: right;
+  }
+
+  [style*='--horizontal-alignment: flex-start'] > .text-block {
+    --text-align-default: left;
+  }
+
+  [style*='--horizontal-alignment: center'] > .text-block {
+    --text-align-default: center;
+  }
+
+  [style*='--horizontal-alignment: flex-end'] > .text-block {
+    --text-align-default: right;
+  }
+
+  .text-block {
+    width: var(--width);
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: var(--horizontal-alignment);
+  }
+
+  .text-block > * {
+    width: var(--width);
+    max-inline-size: min(100%, var(--max-width, 100%));
+    text-align: var(--text-align, var(--text-align-default));
+    text-wrap: var(--text-wrap);
+    font-weight: inherit !important;
+    font-family: inherit !important;
+  }
+
+  .text-block:not(.text-block--full-width).rte,
+  .text-block:not(.text-block--full-width).paragraph {
+    text-wrap: balance;
+    text-wrap: pretty;
+  }
+
+  .text-block:not(.text-block--full-width):is(.h1, .h2, .h3, .h4, .h5, .h6) {
+    text-wrap: balance;
+  }
+
+  .text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) a {
+    text-decoration-color: transparent;
+  }
+
+  .text-block h1,
+  .text-block.h1 > * {
+    margin-block: var(--font-h1--spacing);
+  }
+
+  .text-block h2,
+  .text-block.h2 > * {
+    margin-block: var(--font-h2--spacing);
+  }
+
+  .text-block h3,
+  .text-block.h3 > * {
+    margin-block: var(--font-h3--spacing);
+  }
+
+  .text-block h4,
+  .text-block.h4 > * {
+    margin-block: var(--font-h4--spacing);
+  }
+
+  .text-block h5,
+  .text-block.h5 > * {
+    margin-block: var(--font-h5--spacing);
+  }
+
+  .text-block h6,
+  .text-block.h6 > * {
+    margin-block: var(--font-h6--spacing);
+  }
+
+  .text-block p,
+  .text-block.p > * {
+    margin-block: var(--font-paragraph--spacing);
+  }
+
+  .text-block > *:first-child {
+    margin-block-start: 0;
+  }
+
+  .text-block > *:last-child {
+    margin-block-end: 0;
+  }
+
+  .text-block--align-center,
+  .text-block--align-center > * {
+    margin-inline: auto;
+  }
+
+  .text-block--align-right,
+  .text-block--align-right > * {
+    margin-inline-start: auto;
+  }
+
+  .text-block--background {
+    background-color: var(--text-background-color);
+    border-radius: var(--text-corner-radius);
+
+    padding-block-start: max(var(--text-padding), var(--padding-block-start, 0));
+    padding-block-end: max(var(--text-padding), var(--padding-block-end, 0));
+    padding-inline-start: max(var(--text-padding), var(--padding-inline-start, 0));
+    padding-inline-end: max(var(--text-padding), var(--padding-inline-end, 0));
+  }
+
+  .custom-color,
+  .custom-color > :is(h1, h2, h3, h4, h5, h6, p, *) {
+    color: var(--color);
+  }
+{% endstylesheet %}

@@ -1,0 +1,101 @@
+<div class="verified-account-icon-block" {{ block.shopify_attributes }} style="margin-left: {{ block.settings.margin_left }}%; margin-right: {{ block.settings.margin_right }}%;">
+  <span class="verified-account-icon" 
+    style="background-color: {{ block.settings.icon_bg_color }};">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+      {%- comment -%} 
+        This path is only the checkmark. 
+        The circle is created by the CSS background and border-radius. 
+      {%- endcomment -%}
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="{{ block.settings.tick_color }}"/>
+    </svg>
+  </span>
+</div>
+
+{% stylesheet %}
+  .verified-account-icon-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .verified-account-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .verified-account-icon svg {
+    /* Scaling the tick slightly smaller than the circle for better look */
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+  @media screen and (max-width: 767px){
+    .verified-account-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Verified Account Icon",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Icon Colors"
+    },
+    {
+      "type": "color",
+      "id": "icon_bg_color",
+      "label": "Circle Background Color",
+      "default": "#4CAF50"
+    },
+    {
+      "type": "color",
+      "id": "tick_color",
+      "label": "Checkmark (Tick) Color",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "margin_left",
+      "label": "Margin Left (%)",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "margin_right",
+      "label": "Margin Right (%)",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Verified Account Icon",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,129 @@
+{%- doc -%}
+  Renders block content for all blocks that extend the group block.
+
+  @param {string} children - The DOM content of the group block.
+  @param {object} settings - The settings of the group block.
+  @param {string} shopify_attributes - String with Shopify attributes for the editor.
+  @param {string} [class] - Custom classes for the group block.
+  @param {string} [style] - Custom inline styles for the group block.
+
+  @example
+  {% render 'group', children: children, settings: block.settings, shopify_attributes: block.shopify_attributes %}
+{%- enddoc -%}
+
+{%- capture group_id -%}group-{{ section.id }}-{{ block.id }}{%- endcapture -%}
+
+<style>
+  .group-block--{{ group_id }} {
+    --margin-bs: {{ settings.margin-block-start | default: 0 }}%;
+    --margin-be: {{ settings.margin-block-end | default: 0 }}%;
+    --margin-is: {{ settings.margin-inline-start | default: 0 }}%;
+    --margin-ie: {{ settings.margin-inline-end | default: 0 }}%;
+  }
+
+  @media screen and (max-width: 767px) {
+    .group-block--{{ group_id }} {
+      --margin-bs: {{ settings.margin-block-start-mobile | default: settings.margin-block-start | default: 0 }}%;
+      --margin-be: {{ settings.margin-block-end-mobile | default: settings.margin-block-end | default: 0 }}%;
+      --margin-is: {{ settings.margin-inline-start-mobile | default: settings.margin-inline-start | default: 0 }}%;
+      --margin-ie: {{ settings.margin-inline-end-mobile | default: settings.margin-inline-end | default: 0 }}%;
+    }
+  }
+</style>
+
+<div
+  class="
+    group-block
+    group-block--{{ group_id }}
+    group-block--height-{{ settings.height }}
+    group-block--width-{{ settings.width }}
+    border-style
+    spacing-style
+    size-style
+    {% if settings.inherit_color_scheme == false %} color-{{ settings.color_scheme }}{% endif %}
+    {% if settings.mobile_order != 'default' %} mobile-order-{{ settings.mobile_order }}{% endif %}
+    {{ class }}
+  "
+  style="
+    {% render 'border-override', settings: settings %}
+    {% render 'spacing-style', settings: settings %}
+    {% render 'size-style', settings: settings %}
+    
+    margin-block-start: var(--margin-bs);
+    margin-block-end: var(--margin-be);
+    margin-inline-start: var(--margin-is);
+    {% if settings.remove_right_margin == false %}margin-inline-end: var(--margin-ie);{% endif %}
+    
+    {{ style }}
+  "
+  {{ shopify_attributes }}
+  data-testid="group-block"
+>
+  {%- if settings.link != blank -%}
+    <a
+      href="{{ settings.link }}"
+      class="group-block__link"
+      {% if settings.open_in_new_tab %}
+        target="_blank" rel="noopener"
+      {% endif %}
+    ></a>
+  {%- endif -%}
+
+  <div class="group-block__media-wrapper">
+    {% render 'background-media',
+      background_media: settings.background_media,
+      background_video: settings.video,
+      background_video_position: settings.video_position,
+      background_image: settings.background_image,
+      background_image_position: settings.background_image_position,
+      placeholder: settings.placeholder
+    %}
+    {% if settings.toggle_overlay %}
+      {% render 'overlay', settings: settings, layer: '0' %}
+    {% endif %}
+  </div>
+
+  <div
+    class="
+      group-block-content
+      {% if request.design_mode %}group-block-content--design-mode{% endif %}
+      layout-panel-flex
+      layout-panel-flex--{{ settings.content_direction | default: 'column' }}
+      {% if settings.vertical_on_mobile %} mobile-column{% endif %}
+    "
+    style="{% render 'layout-panel-style', settings: settings %}"
+  >
+    {{- children -}}
+  </div>
+</div>
+
+{% stylesheet %}
+  .group-block__link {
+    position: absolute;
+    inset: 0;
+  }
+
+  .group-block__link ~ :is(.group-block-content, .group-block__media-wrapper) {
+    pointer-events: none;
+
+    :is(a, button, input, textarea, select) {
+      pointer-events: auto;
+    }
+  }
+
+  .group-block__link ~ .group-block-content--design-mode {
+    pointer-events: auto;
+  }
+
+  /* Mobile Order Control for Individual Groups */
+  @media screen and (max-width: 767px) {
+    /* When parent group is horizontal on desktop and vertical on mobile */
+    .layout-panel-flex--row.mobile-column .mobile-order-first {
+      order: -1;
+    }
+    
+    .layout-panel-flex--row.mobile-column .mobile-order-last {
+      order: 1;
+    }
+  }
+{% endstylesheet %}

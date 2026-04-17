@@ -1,0 +1,161 @@
+{%- doc -%}
+  Intended for use in a block similar to the button block.
+  @param {string} link - link to render
+  @param {object} [block] - The block
+  @param {string} [id_suffix] - Optional suffix for unique IDs within a group
+{%- enddoc -%}
+
+{% liquid
+  assign bs = block.settings
+  assign custom_font = bs.button_font
+  assign button_uid = block.id | append: id_suffix
+
+  if bs.transparent_bg
+    assign final_bg = 'transparent'
+  else
+    assign final_bg = bs.bg_color | default: 'transparent'
+  endif
+
+  if bs.width == 'custom'
+    assign final_width = bs.custom_width | append: 'px'
+  else
+    assign final_width = 'auto'
+  endif
+%}
+
+<style>
+  {{ custom_font | font_face: display: 'swap' }}
+
+  #shopify-block-{{ block.id }},
+  [data-shopify-editor-block*="{{ block.id }}"] {
+    display: {% if bs.full_width %}block{% else %}inline-block{% endif %} !important;
+    vertical-align: middle;
+    width: {% if bs.full_width %}100%{% else %}auto{% endif %};
+    flex-shrink: 0;
+  }
+
+  .btn-wrapper--{{ button_uid }} {
+    display: {% if bs.full_width %}flex{% else %}inline-flex{% endif %};
+    width: {% if bs.full_width %}100%{% else %}auto{% endif %};
+    justify-content: flex-start;
+    vertical-align: middle;
+
+    margin-top: {{ bs.mar_t | default: 0 }}%;
+    margin-bottom: {{ bs.mar_b | default: 0 }}%;
+    margin-left: {{ bs.mar_l | default: 0 }}%;
+    margin-right: {{ bs.mar_r | default: 0 }}%;
+  }
+
+  .btn--{{ button_uid }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: {{ final_width }};
+    min-width: fit-content;
+
+    background-color: {{ final_bg }};
+    color: {{ bs.text_color | default: '#ffffff' }} !important;
+
+    border-style: solid;
+    border-width: {{ bs.border_width | default: 0 }}px;
+    border-color: {{ bs.border_color | default: '#000000' }};
+    border-radius: {{ bs.border_radius | default: 0 }}px;
+
+    padding-top: {{ bs.pad_t | default: 0 }}%;
+    padding-bottom: {{ bs.pad_b | default: 0 }}%;
+    padding-left: {{ bs.pad_l | default: 0 }}%;
+    padding-right: {{ bs.pad_r | default: 0 }}%;
+
+    font-family: {{ custom_font.family }}, {{ custom_font.fallback_families }};
+    font-weight: {{ bs.button_font_weight | default: 400 }};
+    font-style: {{ custom_font.style }};
+    
+    font-size: {{ bs.font_size | default: 16 }}px; 
+
+    text-decoration: none;
+    line-height: 1.2;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    box-sizing: border-box;
+  }
+
+  /* MOBILE STYLES (Max 767px) */
+  @media screen and (max-width: 767px) {
+    .btn-wrapper--{{ button_uid }} {
+      display: inline-flex !important;
+      width: auto !important; 
+      
+      margin-top: {{ bs.m_mar_t | default: bs.mar_t }}% !important;
+      margin-bottom: {{ bs.m_mar_b | default: bs.mar_b }}% !important;
+      margin-left: {{ bs.m_mar_l | default: bs.mar_l }}% !important;
+      margin-right: {{ bs.m_mar_r | default: bs.mar_r }}% !important;
+    }
+
+    .btn--{{ button_uid }} {
+      {% if bs.m_custom_width_enable %}
+        width: {{ bs.m_custom_width }}px !important;
+      {% else %}
+        width: auto !important;
+      {% endif %}
+      min-width: unset !important;
+
+      font-size: {{ bs.m_font_size | default: 14 }}px !important;
+      font-weight: {{ bs.m_font_weight | default: 400 }} !important;
+      border-radius: {{ bs.m_radius | default: bs.border_radius }}px !important;
+
+      padding-top: {{ bs.m_pad_t | default: bs.pad_t }}% !important;
+      padding-bottom: {{ bs.m_pad_b | default: bs.pad_b }}% !important;
+      padding-left: {{ bs.m_pad_l | default: bs.pad_l }}% !important;
+      padding-right: {{ bs.m_pad_r | default: bs.pad_r }}% !important;
+    }
+  }
+
+  .btn--{{ button_uid }}:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+  }
+
+  .btn--{{ button_uid }} svg {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  .btn--{{ button_uid }}:hover svg {
+    transform: translateX(4px);
+  }
+</style>
+
+<div class="btn-wrapper--{{ button_uid }}" {{ block.shopify_attributes }}>
+  <a
+    {% if link == blank %}
+      role="link"
+      aria-disabled="true"
+    {% else %}
+      href="{{ link }}"
+    {% endif %}
+    class="btn--{{ button_uid }}"
+    {%- if bs.open_in_new_tab -%}
+      target="_blank"
+      rel="noopener noreferrer"
+    {%- endif -%}
+  >
+    <span>{{ bs.label }}</span>
+
+    {% if bs.add_arrow %}
+      <span class="btn-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+    {% endif %}
+  </a>
+</div>
+
+{% stylesheet %}
+  .btn-icon {
+    display: flex;
+    align-items: center;
+    line-height: 0;
+  }
+{% endstylesheet %}
